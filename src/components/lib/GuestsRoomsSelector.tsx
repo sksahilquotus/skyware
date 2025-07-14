@@ -1,131 +1,138 @@
 "use client";
 
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Minus, Plus } from "lucide-react";
 import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Minus, Plus, Users, Bed } from "lucide-react";
 
-const GuestsRoomsSelector = () => {
+const GuestsRoomsSelector: React.FC = () => {
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
-  const [petFriendly, setPetFriendly] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const reset = () => {
-    setAdults(2);
-    setChildren(0);
-    setRooms(1);
-    setPetFriendly(false);
-  };
+  const totalGuests = adults + children;
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="w-full justify-start text-left font-medium text-black whitespace-normal break-words"
+          className="w-full h-11 text-sm text-gray-900 border-gray-300 hover:border-[#174166] transition-all duration-200 rounded-lg px-3 py-2 flex items-center gap-2 overflow-hidden whitespace-normal break-words text-left"
         >
-          {`${adults} Adult${adults > 1 ? "s" : ""}, ${children} Child${
-            children !== 1 ? "ren" : ""
-          }, ${rooms} Room${rooms > 1 ? "s" : ""}`}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <Users className="h-4 w-4 text-gray-500" />
+            <span className="truncate">{totalGuests} Guest{totalGuests !== 1 ? 's' : ''}</span>
+            <span className="text-gray-400">•</span>
+            <Bed className="h-4 w-4 text-gray-500" />
+            <span className="truncate">{rooms} Room{rooms !== 1 ? 's' : ''}</span>
+          </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[280px] sm:w-[300px] p-4 space-y-4">
-        {/* Adults */}
-        <div className="flex items-center justify-between">
-          <span>Adults</span>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setAdults(Math.max(1, adults - 1))}
-            >
-              <Minus className="w-4 h-4" />
-            </Button>
-            <span>{adults}</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setAdults(adults + 1)}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
 
-        {/* Children */}
-        <div className="flex items-center justify-between">
-          <span>Children</span>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setChildren(Math.max(0, children - 1))}
-            >
-              <Minus className="w-4 h-4" />
-            </Button>
-            <span>{children}</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setChildren(children + 1)}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
 
-        {/* Rooms */}
-        <div className="flex items-center justify-between">
-          <span>Rooms</span>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setRooms(Math.max(1, rooms - 1))}
-            >
-              <Minus className="w-4 h-4" />
-            </Button>
-            <span>{rooms}</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setRooms(rooms + 1)}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
 
-        {/* Pet Friendly */}
-        <div className="border-t pt-2 space-y-1">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              checked={petFriendly}
-              onCheckedChange={(val) => setPetFriendly(!!val)}
-            />
-            <div className="text-sm">
-              <div className="font-medium">Pet-friendly</div>
-              <div className="text-gray-500 text-xs">
-                Only show stays that allow pets
+      <PopoverContent className="w-80 p-4 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <div className="space-y-6">
+          {/* Adults */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-[#174166]" />
+              <div>
+                <label className="text-sm font-medium text-gray-700">Adults</label>
+                <p className="text-xs text-gray-500">Ages 13 or above</p>
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setAdults(Math.max(1, adults - 1))}
+                className="h-8 w-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-gray-50"
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-8 text-center font-medium text-gray-900">{adults}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setAdults(adults + 1)}
+                className="h-8 w-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-gray-50"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-between pt-2 border-t mt-2">
-          <Button variant="ghost" size="sm" onClick={reset}>
-            Reset
-          </Button>
-          <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
-            Apply
-          </Button>
+          {/* Children */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-[#174166]" />
+              <div>
+                <label className="text-sm font-medium text-gray-700">Children</label>
+                <p className="text-xs text-gray-500">Ages 0–12</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setChildren(Math.max(0, children - 1))}
+                className="h-8 w-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-gray-50"
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-8 text-center font-medium text-gray-900">{children}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setChildren(children + 1)}
+                className="h-8 w-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-gray-50"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Rooms */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Bed className="h-5 w-5 text-[#174166]" />
+              <div>
+                <label className="text-sm font-medium text-gray-700">Rooms</label>
+                <p className="text-xs text-gray-500">Number of rooms needed</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setRooms(Math.max(1, rooms - 1))}
+                className="h-8 w-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-gray-50"
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-8 text-center font-medium text-gray-900">{rooms}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setRooms(rooms + 1)}
+                className="h-8 w-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-gray-50"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Apply Button */}
+          <div className="pt-2">
+            <Button
+              onClick={() => setIsOpen(false)}
+              className="w-full bg-[#174166] hover:bg-[#1e4a73] text-white rounded-lg"
+            >
+              Apply
+            </Button>
+          </div>
         </div>
       </PopoverContent>
     </Popover>

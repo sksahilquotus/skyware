@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import clsx from "clsx";
 
 const steps = [
-  { name: "Rooms", path: "/rooms" },
+  { name: "Rooms", path: "/" },
   { name: "Add-Ons", path: "/addons" },
   { name: "Activities", path: "/activities" },
   { name: "Guest", path: "/guest" },

@@ -1,63 +1,51 @@
 "use client";
 
-import * as React from "react";
-import { ChevronDownIcon } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 
 interface Calendar22Props {
   label: string;
-  value?: Date;
-  onChange?: (date: Date | undefined) => void;
+  value: Date | undefined;
+  onChange: (date: Date | undefined) => void;
 }
 
-export function Calendar22({ label, value, onChange }: Calendar22Props) {
-  const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(value);
-
-  React.useEffect(() => {
-    setDate(value);
-  }, [value]);
-
-  const handleSelect = (selectedDate: Date | undefined) => {
-    setDate(selectedDate);
-    if (onChange) onChange(selectedDate);
-    setOpen(false);
-  };
+const Calendar22: React.FC<Calendar22Props> = ({ label, value, onChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="flex flex-col">
-      <Label htmlFor={label} className="px-1 text-sm text-gray-500 mb-1">
+      <label className="block text-sm font-medium text-gray-600 mb-2">
         {label}
-      </Label>
-      <Popover open={open} onOpenChange={setOpen}>
+      </label>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            id={label}
-            className="w-full justify-between font-normal h-10 text-black"
+            className="w-full justify-start text-left h-11 text-gray-900 border-gray-300 hover:border-[#174166] transition-all duration-200 rounded-lg"
           >
-            {date ? date.toLocaleDateString() : `Select ${label.toLowerCase()}`}
-            <ChevronDownIcon />
+            <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+            {value ? format(value, "MMM dd, yyyy") : "Select date"}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+        <PopoverContent className="w-auto p-0 bg-white border border-gray-200 rounded-lg shadow-lg">
           <Calendar
             mode="single"
-            selected={date}
-            captionLayout="dropdown"
-            onSelect={handleSelect}
+            selected={value}
+            onSelect={(date) => {
+              onChange(date);
+              setIsOpen(false);
+            }}
             initialFocus
+            className="rounded-lg"
           />
         </PopoverContent>
       </Popover>
     </div>
   );
-}
+};
+
+export { Calendar22 };

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import LayoutWrapper from "@/components/LayoutWrapper"; // extracted to a client component
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -10,7 +9,6 @@ const openSans = Open_Sans({
   weight: ["400", "600", "700"],
   display: "swap",
 });
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,23 +27,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className={`${openSans.variable}`}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        {children}
-        <Footer 
-          companyName="Skyware Hotels" 
-          address="5100 Buckeystown Pike, Frederick, MD 21704" 
-          phone="877-759-9329" 
-          email="sales@skywaresystems.com" 
-          year={2025} 
-        />
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );
