@@ -4,8 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CheckCircle2, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Dialog as HeadlessDialog } from "@headlessui/react";
+import { CheckCircle2, ChevronLeft, ChevronRight} from "lucide-react";
+// import { Dialog as HeadlessDialog } from "@headlessui/react";
 import {
   Dialog,
   DialogClose,
@@ -37,7 +37,7 @@ export const RoomCard = ({
 
   const [isSelected, setIsSelected] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -78,7 +78,7 @@ export const RoomCard = ({
             width={600}
             height={300}
             className="object-cover w-full h-[200px] sm:h-[250px] rounded-md cursor-pointer"
-            onClick={() => setModalOpen(true)}
+            // onClick={() => setModalOpen(true)}
           />
           <button
             onClick={handlePrev}

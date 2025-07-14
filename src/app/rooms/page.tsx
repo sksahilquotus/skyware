@@ -8,7 +8,7 @@ export default function RoomsPage() {
       images: [
         "https://www.skywaresystems.net/hotelimages/demo/NSK_1.jpg",
         "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        "/non-smoking-king-room-3.jpg",
+        "https://www.skywaresystems.net/hotelimages/demo/NSK_1.jpg",
       ],
       maxGuests: 2,
       beds: 1,
@@ -17,7 +17,7 @@ export default function RoomsPage() {
     },
     {
       title: "Deluxe Queen Suite",
-      images: ["/deluxe-queen-room-1.jpg", "/deluxe-queen-room-2.jpg"],
+      images: ["https://www.skywaresystems.net/hotelimages/demo/NSK_1.jpg", "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"],
       maxGuests: 4,
       beds: 2,
       price: 250,
@@ -25,7 +25,7 @@ export default function RoomsPage() {
     },
     {
       title: "Executive King Suite",
-      images: ["/executive-king-room-1.jpg", "/executive-king-room-2.jpg"],
+      images: ["https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500", "https://www.skywaresystems.net/hotelimages/demo/NSK_1.jpg"],
       maxGuests: 3,
       beds: 1,
       price: 300,
