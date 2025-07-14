@@ -4,19 +4,19 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ChevronDown, 
-  ChevronUp, 
-  Plus, 
-  Minus, 
+import {
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Minus,
   ShoppingCart,
   Gift,
   Ticket,
   Coffee,
   Heart,
   Star,
-  Calendar,
-  DollarSign
+  DollarSign,
+  LucideIcon
 } from "lucide-react";
 
 // Types
@@ -24,7 +24,7 @@ type AddOnItem = {
   title: string;
   description: string;
   price: number;
-  icon?: any;
+  icon?: LucideIcon;
   popular?: boolean;
   category?: string;
 };
@@ -32,7 +32,7 @@ type AddOnItem = {
 type AddOnCategory = {
   name: string;
   items: AddOnItem[];
-  icon: any;
+  icon: LucideIcon;
   color: string;
 };
 
@@ -198,7 +198,7 @@ export default function AddOns() {
           {addOnData.map((category) => {
             const CategoryIcon = category.icon;
             const isOpen = openCategories[category.name];
-            
+
             return (
               <div key={category.name} className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 {/* Category Header */}
@@ -239,22 +239,23 @@ export default function AddOns() {
                     {category.items.map((item) => {
                       const ItemIcon = item.icon;
                       const hasQuantity = Object.values(quantities[item.title] || {}).some(qty => qty > 0);
-                      
+
                       return (
-                        <Card 
-                          key={item.title} 
-                          className={`transition-all duration-200 hover:shadow-md border-2 ${
-                            hasQuantity ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 hover:border-gray-300'
-                          }`}
+                        <Card
+                          key={item.title}
+                          className={`transition-all duration-200 hover:shadow-md border-2 ${hasQuantity ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 hover:border-gray-300'
+                            }`}
                         >
                           <CardContent className="p-6">
                             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr] gap-6 items-center">
                               {/* Item Info */}
                               <div className="space-y-3">
                                 <div className="flex items-start gap-3">
-                                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <ItemIcon className="w-5 h-5 text-[#174166]" />
-                                  </div>
+                                  {ItemIcon && (
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                      <ItemIcon className="w-5 h-5 text-[#174166]" />
+                                    </div>
+                                  )}
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
                                       <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
@@ -267,7 +268,7 @@ export default function AddOns() {
                                     <p className="text-gray-600 leading-relaxed">{item.description}</p>
                                   </div>
                                 </div>
-                                
+
                                 <div className="flex items-center gap-2 ml-13">
                                   <DollarSign className="w-4 h-4 text-green-600" />
                                   <span className="text-lg font-bold text-green-600">
@@ -282,7 +283,7 @@ export default function AddOns() {
                               {/* Quantity Controls */}
                               {dates.map((date) => {
                                 const currentQty = quantities[item.title]?.[date.value] || 0;
-                                
+
                                 return (
                                   <div key={date.value} className="flex flex-col items-center gap-3">
                                     <div className="text-sm font-medium text-gray-700">{date.label}</div>
@@ -296,13 +297,13 @@ export default function AddOns() {
                                       >
                                         <Minus className="w-3 h-3" />
                                       </Button>
-                                      
+
                                       <div className="w-12 text-center">
                                         <span className="text-lg font-semibold text-gray-900">
                                           {currentQty}
                                         </span>
                                       </div>
-                                      
+
                                       <Button
                                         size="sm"
                                         variant="outline"
@@ -312,7 +313,7 @@ export default function AddOns() {
                                         <Plus className="w-3 h-3" />
                                       </Button>
                                     </div>
-                                    
+
                                     {currentQty > 0 && (
                                       <div className="text-xs text-green-600 font-medium">
                                         ${(currentQty * item.price).toFixed(2)}
@@ -353,7 +354,7 @@ export default function AddOns() {
                 <div className="text-sm text-gray-500">Total add-ons cost</div>
               </div>
             </div>
-            
+
             <div className="flex gap-4 justify-end">
               <Button
                 variant="outline"

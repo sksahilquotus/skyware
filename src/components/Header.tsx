@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Calendar22 } from "./lib/Calendar22";
-import { Search, HelpCircle, User } from "lucide-react";
+import { HelpCircle, User } from "lucide-react";
 
 const Header = () => {
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date("2025-07-17"));

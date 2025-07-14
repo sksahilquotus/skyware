@@ -13,8 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Clock,
-  Calendar,
-  Users,
   Star,
   Heart,
   Plus,
@@ -185,6 +183,17 @@ const activityData = {
   }
 };
 
+type Activity = {
+  title: string;
+  price: number;
+  duration: string;
+  description: string;
+  rating: number;
+  icon: React.ElementType;
+  popular?: boolean;
+};
+
+
 export default function ActivityBooking() {
   const [quantities, setQuantities] = useState<
     Record<string, Record<string, Record<string, Record<string, number>>>>
@@ -251,7 +260,7 @@ export default function ActivityBooking() {
   };
 
 
-  const renderActivityTable = (category: string, activity: any) => {
+  const renderActivityTable = (category: string, activity: Activity) => {
     const activityKey = `${category}-${activity.title}`;
 
     return (
@@ -312,7 +321,7 @@ export default function ActivityBooking() {
 
         {/* Time Slots */}
         <div className="space-y-2">
-          {timeSlots.map((timeSlot, idx) => (
+          {timeSlots.map((timeSlot) => (
             <div key={timeSlot} className="grid grid-cols-[200px_1fr_1fr] gap-4 items-center p-3 bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-all duration-200">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-gray-400" />
