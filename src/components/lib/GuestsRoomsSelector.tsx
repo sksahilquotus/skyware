@@ -18,16 +18,18 @@ const GuestsRoomsSelector: React.FC = () => {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="w-full h-11 text-sm text-gray-900 border-gray-300 hover:border-[#174166] transition-all duration-200 rounded-lg px-3 py-2 flex items-center gap-2 overflow-hidden whitespace-normal break-words text-left"
+          className="w-full h-11 text-sm text-gray-900 border-gray-300 hover:border-[#174166] transition-all duration-200 rounded-lg px-3 py-2 flex items-center gap-2 text-left"
         >
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <div className="flex items-center gap-2 whitespace-nowrap">
             <Users className="h-4 w-4 text-gray-500" />
-            <span className="truncate">{totalGuests} Guest{totalGuests !== 1 ? 's' : ''}</span>
-            <span className="text-gray-400">•</span>
+            <span>{totalGuests} Guest{totalGuests !== 1 ? 's' : ''}</span>
+            {/* <span className="text-gray-400">•</span> */}
             <Bed className="h-4 w-4 text-gray-500" />
-            <span className="truncate">{rooms} Room{rooms !== 1 ? 's' : ''}</span>
+            <span>{rooms} Room{rooms !== 1 ? 's' : ''}</span>
           </div>
         </Button>
+
+
       </PopoverTrigger>
 
 

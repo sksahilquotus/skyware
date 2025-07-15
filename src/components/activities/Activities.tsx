@@ -511,7 +511,7 @@ export default function ActivityBooking() {
                     </p>
                   </div>
                 </div>
-                <div className="text-right sm:text-right text-left">
+                <div className="sm:text-right text-left">
                   <div className="text-2xl font-bold text-[#174166]">
                     ${getTotalCost().toFixed(2)}
                   </div>
