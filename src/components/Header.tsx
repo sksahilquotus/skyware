@@ -8,8 +8,10 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Calendar22 } from "./lib/Calendar22";
 import { HelpCircle, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
+  const router = useRouter();
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date("2025-07-17"));
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(new Date("2025-07-18"));
 
@@ -30,6 +32,7 @@ const Header = () => {
             <Button 
               size="sm"
               className="bg-yellow-400 hover:bg-yellow-500 text-[#174166] font-medium px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
+              onClick={() => router.push("/sign-in")}
             >
               <User className="h-4 w-4" />
               Sign In

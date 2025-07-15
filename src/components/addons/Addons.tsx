@@ -160,7 +160,7 @@ export default function AddOns() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header Section */}
-      <div className="bg-white shadow-sm border-b">
+      {/* <div className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-[#174166] mb-3">
@@ -171,8 +171,8 @@ export default function AddOns() {
             </p>
           </div>
 
-          {/* Date Header */}
-          {/* <div className="bg-gray-50 rounded-2xl p-6 mb-6">
+         
+          <div className="bg-gray-50 rounded-2xl p-6 mb-6">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Calendar className="w-5 h-5 text-[#174166]" />
               <span className="text-sm font-medium text-gray-600">Select dates for your add-ons</span>
@@ -188,9 +188,9 @@ export default function AddOns() {
                 </div>
               ))}
             </div>
-          </div> */}
+          </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -337,17 +337,23 @@ export default function AddOns() {
         {/* Summary Section */}
         {getTotalItems() > 0 && (
           <div className="mt-12 bg-white rounded-2xl shadow-lg p-6 border-t-4 border-yellow-400">
-            <div className="flex items-center justify-between mb-4">
+            {/* Wrapper: stack on mobile, flex-row on medium+ */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              {/* Left Section */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
                   <ShoppingCart className="w-5 h-5 text-[#174166]" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">Add-Ons Summary</h3>
-                  <p className="text-sm text-gray-600">{getTotalItems()} item{getTotalItems() > 1 ? 's' : ''} selected</p>
+                  <p className="text-sm text-gray-600">
+                    {getTotalItems()} item{getTotalItems() > 1 ? 's' : ''} selected
+                  </p>
                 </div>
               </div>
-              <div className="text-right">
+
+              {/* Right Section: aligns right on md+, centers on mobile */}
+              <div className="text-left md:text-right">
                 <div className="text-2xl font-bold text-[#174166]">
                   ${getTotalPrice().toFixed(2)}
                 </div>
@@ -355,15 +361,16 @@ export default function AddOns() {
               </div>
             </div>
 
-            <div className="flex gap-4 justify-end">
+            {/* Buttons Section: stack on mobile, row on larger */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-end">
               <Button
                 variant="outline"
-                className="border-gray-300 hover:border-gray-400"
+                className="border-gray-300 hover:border-gray-400 w-full sm:w-auto"
                 onClick={() => setQuantities({})}
               >
                 Clear All
               </Button>
-              <Button className="bg-[#174166] hover:bg-[#1e4a73] px-8">
+              <Button className="bg-[#174166] hover:bg-[#1e4a73] px-8 w-full sm:w-auto">
                 Continue to Activities
               </Button>
             </div>

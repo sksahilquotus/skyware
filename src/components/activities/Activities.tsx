@@ -25,7 +25,7 @@ import {
   Fish,
   Search,
   Filter,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
 
 const timeSlots = [
@@ -77,7 +77,7 @@ const activityData = {
         rating: 4.5,
         icon: Sparkles,
       },
-    ]
+    ],
   },
   "Massage Therapy": {
     icon: Zap,
@@ -138,7 +138,7 @@ const activityData = {
         popular: false,
         icon: Zap,
       },
-    ]
+    ],
   },
   "Facial Treatments": {
     icon: Flower2,
@@ -163,7 +163,7 @@ const activityData = {
         icon: Flower2,
         popular: false,
       },
-    ]
+    ],
   },
   "Adventure Activities": {
     icon: Fish,
@@ -179,8 +179,8 @@ const activityData = {
         icon: Fish,
         popular: false,
       },
-    ]
-  }
+    ],
+  },
 };
 
 type Activity = {
@@ -193,7 +193,6 @@ type Activity = {
   popular?: boolean;
 };
 
-
 export default function ActivityBooking() {
   const [quantities, setQuantities] = useState<
     Record<string, Record<string, Record<string, Record<string, number>>>>
@@ -201,8 +200,14 @@ export default function ActivityBooking() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleQuantity = (category: string, activity: string, date: string, timeSlot: string, delta: number) => {
-    setQuantities(prev => ({
+  const handleQuantity = (
+    category: string,
+    activity: string,
+    date: string,
+    timeSlot: string,
+    delta: number
+  ) => {
+    setQuantities((prev) => ({
       ...prev,
       [category]: {
         ...prev[category],
@@ -210,15 +215,16 @@ export default function ActivityBooking() {
           ...prev[category]?.[activity],
           [date]: {
             ...prev[category]?.[activity]?.[date],
-            [timeSlot]: Math.max(0, (prev[category]?.[activity]?.[date]?.[timeSlot] || 0) + delta)
-          }
-        }
-      }
+            [timeSlot]:
+              Math.max(0, (prev[category]?.[activity]?.[date]?.[timeSlot] || 0) + delta),
+          },
+        },
+      },
     }));
   };
 
   const toggleFavorite = (activityKey: string) => {
-    setFavorites(prev => {
+    setFavorites((prev) => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(activityKey)) {
         newFavorites.delete(activityKey);
@@ -231,10 +237,10 @@ export default function ActivityBooking() {
 
   const getTotalBookings = () => {
     let total = 0;
-    Object.values(quantities).forEach(categoryData => {
-      Object.values(categoryData).forEach(activityData => {
-        Object.values(activityData).forEach(dateData => {
-          Object.values(dateData).forEach(qty => {
+    Object.values(quantities).forEach((category) => {
+      Object.values(category).forEach((activity) => {
+        Object.values(activity).forEach((date) => {
+          Object.values(date).forEach((qty) => {
             total += qty;
           });
         });
@@ -247,10 +253,12 @@ export default function ActivityBooking() {
     let total = 0;
     Object.entries(quantities).forEach(([category, categoryData]) => {
       Object.entries(categoryData).forEach(([activityTitle, activityBookingData]) => {
-        const activity = activityData[category as keyof typeof activityData]?.activities.find(act => act.title === activityTitle);
+        const activity = activityData[category as keyof typeof activityData]?.activities.find(
+          (act) => act.title === activityTitle
+        );
         const price = activity?.price || 0;
-        Object.values(activityBookingData).forEach(dateData => {
-          Object.values(dateData).forEach(qty => {
+        Object.values(activityBookingData).forEach((dateData) => {
+          Object.values(dateData).forEach((qty) => {
             total += qty * price;
           });
         });
@@ -259,14 +267,13 @@ export default function ActivityBooking() {
     return total;
   };
 
-
   const renderActivityTable = (category: string, activity: Activity) => {
     const activityKey = `${category}-${activity.title}`;
 
     return (
-      <div className="mt-6">
+      <div className="mt-6 overflow-x-auto">
         {/* Activity Header */}
-        <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4 p-4 bg-gray-50 rounded-xl">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
               <activity.icon className="w-5 h-5 text-[#174166]" />
@@ -307,9 +314,9 @@ export default function ActivityBooking() {
         </div>
 
         {/* Date Headers */}
-        <div className="grid grid-cols-[200px_1fr_1fr] gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr_1fr] gap-4 mb-4">
           <div></div>
-          {dates.map(date => (
+          {dates.map((date) => (
             <div key={date.value} className="text-center">
               <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
                 <div className="text-sm font-semibold text-[#174166]">{date.label}</div>
@@ -322,13 +329,16 @@ export default function ActivityBooking() {
         {/* Time Slots */}
         <div className="space-y-2">
           {timeSlots.map((timeSlot) => (
-            <div key={timeSlot} className="grid grid-cols-[200px_1fr_1fr] gap-4 items-center p-3 bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-all duration-200">
+            <div
+              key={timeSlot}
+              className="grid grid-cols-1 sm:grid-cols-[200px_1fr_1fr] gap-4 items-center p-3 bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-all duration-200"
+            >
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-gray-400" />
                 <span className="text-sm font-medium text-gray-700">{timeSlot}</span>
               </div>
 
-              {dates.map(date => {
+              {dates.map((date) => {
                 const currentQty = quantities[category]?.[activity.title]?.[date.value]?.[timeSlot] || 0;
 
                 return (
@@ -376,16 +386,6 @@ export default function ActivityBooking() {
       {/* Header Section */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-[#174166] mb-3">
-              Book Your Perfect Activities
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Discover amazing experiences and wellness treatments. Select your preferred time slots for each day of your stay.
-            </p>
-          </div>
-
-          {/* Search and Filter */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-gray-50 rounded-2xl p-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -409,14 +409,14 @@ export default function ActivityBooking() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <Accordion type="multiple" className="space-y-6" defaultValue={Object.keys(activityData)}>
+        <Accordion type="multiple" className="space-y-6">
           {Object.entries(activityData).map(([categoryName, categoryData]) => {
             const CategoryIcon = categoryData.icon;
 
             return (
               <div key={categoryName} className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <AccordionItem value={categoryName} className="border-none">
-                  <AccordionTrigger className={`${categoryData.bgColor} hover:shadow-md transition-all duration-200 px-6 py-6`}>
+                  <AccordionTrigger className={`${categoryData.bgColor} hover:shadow-md transition-all duration-200 px-6 py-6 hover:no-underline`}>
                     <div className="flex items-center gap-4 w-full justify-between">
                       <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 bg-gradient-to-r ${categoryData.color} rounded-xl flex items-center justify-center shadow-md`}>
@@ -429,22 +429,25 @@ export default function ActivityBooking() {
                           </p>
                         </div>
                       </div>
-
                     </div>
                   </AccordionTrigger>
 
-
                   <AccordionContent className="px-6 pb-6">
-                    <Accordion type="multiple" className="space-y-4" defaultValue={categoryData.activities.map(act => act.title)}>
+                    <Accordion type="multiple" className="space-y-4">
                       {categoryData.activities
-                        .filter(activity =>
-                          searchTerm === "" ||
-                          activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          activity.description.toLowerCase().includes(searchTerm.toLowerCase())
+                        .filter(
+                          (activity) =>
+                            searchTerm === "" ||
+                            activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            activity.description.toLowerCase().includes(searchTerm.toLowerCase())
                         )
                         .map((activity) => (
-                          <AccordionItem key={activity.title} value={activity.title} className="border border-gray-200 rounded-xl overflow-hidden">
-                            <AccordionTrigger className="px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-200">
+                          <AccordionItem
+                            key={activity.title}
+                            value={activity.title}
+                            className="border border-gray-200 rounded-xl overflow-hidden"
+                          >
+                            <AccordionTrigger className="px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-200 hover:no-underline">
                               <div className="flex items-center justify-between w-full mr-4">
                                 <div className="flex items-center gap-3">
                                   <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
@@ -479,7 +482,6 @@ export default function ActivityBooking() {
                               </div>
                             </AccordionTrigger>
 
-
                             <AccordionContent className="p-4">
                               {renderActivityTable(categoryName, activity)}
                             </AccordionContent>
@@ -497,17 +499,19 @@ export default function ActivityBooking() {
         {getTotalBookings() > 0 && (
           <Card className="mt-8 border-t-4 border-yellow-400 shadow-lg">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
                     <ShoppingCart className="w-5 h-5 text-[#174166]" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">Booking Summary</h3>
-                    <p className="text-sm text-gray-600">{getTotalBookings()} booking{getTotalBookings() > 1 ? 's' : ''} selected</p>
+                    <p className="text-sm text-gray-600">
+                      {getTotalBookings()} booking{getTotalBookings() > 1 ? "s" : ""} selected
+                    </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right sm:text-right text-left">
                   <div className="text-2xl font-bold text-[#174166]">
                     ${getTotalCost().toFixed(2)}
                   </div>
@@ -515,7 +519,7 @@ export default function ActivityBooking() {
                 </div>
               </div>
 
-              <div className="flex gap-4 justify-end">
+              <div className="flex flex-col sm:flex-row gap-4 justify-end">
                 <Button
                   variant="outline"
                   className="border-gray-300 hover:border-gray-400"
@@ -529,6 +533,7 @@ export default function ActivityBooking() {
               </div>
             </CardContent>
           </Card>
+
         )}
       </div>
 
@@ -551,7 +556,7 @@ export default function ActivityBooking() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-[#174166] px-8 py-3 rounded-xl"
+              className="border-white text-[#174166] hover:bg-white  px-8 py-3 rounded-xl"
             >
               View Recommendations
             </Button>

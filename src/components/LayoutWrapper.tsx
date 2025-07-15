@@ -8,7 +8,7 @@ import React from "react";
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const hideHeaderOnly = ["/signIn"];
+  const hideHeaderOnly = ["/sign-in","/sign-up"];
   const hideBoth = ["/help"];
 
   const shouldHideHeader = hideHeaderOnly.includes(pathname) || hideBoth.includes(pathname);
