@@ -41,6 +41,7 @@ const Header = () => {
               size="sm"
               variant="outline"
               className="border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-[#174166] font-medium px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
+              onClick={() => router.push("/help-desk")}
             >
               <HelpCircle className="h-4 w-4" />
               Help
@@ -93,7 +94,7 @@ const Header = () => {
                   Packages
                 </label>
                 <Select>
-                  <SelectTrigger className="text-gray-900 border border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg transition-all duration-200 h-11 min-h-[2.75rem] flex items-center">
+                  <SelectTrigger className="text-gray-900 border border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg transition-all duration-200 h-11 min-h-[2.75rem] flex items-center w-[100%]">
                     <SelectValue placeholder="Select package" />
                   </SelectTrigger>
                   <SelectContent className="text-gray-900">

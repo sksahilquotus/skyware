@@ -26,10 +26,13 @@ import {
     Users,
     Gift,
     Clock,
-    Heart
+    Heart,
+    ArrowLeft
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function SignInSignUpPage() {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isSignInLoading, setIsSignInLoading] = useState(false);
@@ -51,6 +54,16 @@ export default function SignInSignUpPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
+            <div className="relative">
+                <Button
+                    onClick={() => router.back()}
+                    variant="outline"
+                    className="absolute top-4 left-4 z-50 hidden sm:flex items-center bg-white/70 backdrop-blur-md text-[#174166] hover:bg-yellow-400 hover:text-white border border-gray-300 shadow-md rounded-full px-4 py-2"
+                >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                </Button>
+            </div>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#174166] via-[#1e4a73] to-[#174166] text-white py-20 relative overflow-hidden">
                 {/* Background Pattern */}

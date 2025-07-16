@@ -16,7 +16,8 @@ import {
     CheckCircle2,
     ArrowRight,
     UserPlus,
-    LogIn
+    LogIn,
+    ArrowLeft
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -35,6 +36,17 @@ export default function SignInPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="relative">
+                <Button
+                    onClick={() => router.back()}
+                    variant="outline"
+                    className="absolute top-4 left-4 z-50 hidden sm:flex items-center bg-white/70 backdrop-blur-md text-[#174166] hover:bg-yellow-400 hover:text-white border border-gray-300 shadow-md rounded-full px-4 py-2"
+
+                >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                </Button>
+            </div>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#174166] to-[#1e4a73] text-white py-16">
                 <div className="max-w-4xl mx-auto px-4 text-center">
