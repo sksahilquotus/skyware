@@ -562,9 +562,8 @@ export default function ActivityBooking() {
                 variant="outline"
                 className="border-gray-300 hover:border-gray-400"
                 onClick={() => {
-
                   console.log("Previous clicked");
-                  router.push("/");
+                  router.push("/addons");
                 }}
               >
                 ← Previous
@@ -572,9 +571,8 @@ export default function ActivityBooking() {
               <Button
                 className="bg-[#174166] hover:bg-[#1e4a73]"
                 onClick={() => {
-
                   console.log("Next clicked");
-                  router.push("/activities");
+                  router.push("/guest");
                 }}
               >
                 Next →
