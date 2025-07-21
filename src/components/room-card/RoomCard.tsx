@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
 
 type RoomCardProps = {
   title: string;
@@ -32,6 +33,7 @@ export const RoomCard = ({
   price,
   total,
 }: RoomCardProps) => {
+  const router = useRouter();
   const [showAllAmenities, setShowAllAmenities] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -149,10 +151,19 @@ export const RoomCard = ({
                     <DialogHeader>
                       <DialogTitle>Confirm Selection</DialogTitle>
                     </DialogHeader>
-                    <p className="text-gray-700 mb-4">
-                      Are you sure you want to select{" "}
-                      <strong>{title}</strong>?
-                    </p>
+
+                    <div className="text-gray-700 mb-4 space-y-1">
+                      <p>
+                        Are you sure you want to select <strong>{title}</strong>?
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Price: <strong>${price.toFixed(2)}</strong>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Total: <strong>${total.toFixed(2)}</strong>
+                      </p>
+                    </div>
+
                     <DialogFooter>
                       <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
@@ -160,66 +171,71 @@ export const RoomCard = ({
                       <DialogClose asChild>
                         <Button
                           className="bg-[#174166]"
-                          onClick={() => setIsSelected(true)}
+                          onClick={() => {
+                            setIsSelected(true);
+                            router.push("/addons");
+                          }}
                         >
                           Confirm
                         </Button>
                       </DialogClose>
                     </DialogFooter>
                   </DialogContent>
+
                 </Dialog>
               ) : (
                 <Button disabled className="w-full sm:w-auto px-4 bg-orange-400">
-                  Selected
+                  Selected · ${price.toFixed(2)}
                 </Button>
               )}
+
             </div>
           </div>
         </div>
       </Card>
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-  <DialogContent className="w-full max-w-7xl p-0 bg-transparent border-none">
-    <DialogHeader>
-      <DialogTitle className="sr-only">Room Image Viewer</DialogTitle>
-    </DialogHeader>
+        <DialogContent className="w-full max-w-7xl p-0 bg-transparent border-none">
+          <DialogHeader>
+            <DialogTitle className="sr-only">Room Image Viewer</DialogTitle>
+          </DialogHeader>
 
-    <div className="relative w-full h-[90vh] bg-black rounded-xl overflow-hidden">
-      <Image
-        src={images[currentIndex]}
-        alt="Room image"
-        fill
-        className="object-contain w-full h-full"
-        priority
-      />
+          <div className="relative w-full h-[90vh] bg-black rounded-xl overflow-hidden">
+            <Image
+              src={images[currentIndex]}
+              alt="Room image"
+              fill
+              className="object-contain w-full h-full"
+              priority
+            />
 
-      <button
-        onClick={handlePrev}
-        className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
-      >
-        <ChevronLeft className="w-6 h-6 text-gray-800" />
-      </button>
+            <button
+              onClick={handlePrev}
+              className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
+            >
+              <ChevronLeft className="w-6 h-6 text-gray-800" />
+            </button>
 
-      <button
-        onClick={handleNext}
-        className="absolute top-1/2 right-4 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
-      >
-        <ChevronRight className="w-6 h-6 text-gray-800" />
-      </button>
+            <button
+              onClick={handleNext}
+              className="absolute top-1/2 right-4 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
+            >
+              <ChevronRight className="w-6 h-6 text-gray-800" />
+            </button>
 
-      <button
-        onClick={() => setModalOpen(false)}
-        className="absolute top-4 right-4 bg-white text-black px-3 py-1 text-sm rounded-md shadow"
-      >
-        Close
-      </button>
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-4 right-4 bg-white text-black px-3 py-1 text-sm rounded-md shadow"
+            >
+              Close
+            </button>
 
-      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-2 py-1 rounded">
-        {currentIndex + 1} / {images.length}
-      </p>
-    </div>
-  </DialogContent>
-</Dialog>
+            <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-2 py-1 rounded">
+              {currentIndex + 1} / {images.length}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
 
     </>

@@ -35,9 +35,9 @@ export default function RoomsPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 py-10 px-4">
-      <h1 className="font-sans text-center text-3xl font-bold mb-8 text-[#174166]">
+      {/* <h1 className="font-sans text-center text-3xl font-bold mb-8 text-[#174166]">
         Available Rooms
-      </h1>
+      </h1> */}
 
       {rooms.map((room, idx) => (
         <RoomCard key={idx} {...room} />

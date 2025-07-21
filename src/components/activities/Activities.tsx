@@ -27,6 +27,7 @@ import {
   Filter,
   ChevronDown,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const timeSlots = [
   "10:30 AM - 11:30 AM",
@@ -194,6 +195,7 @@ type Activity = {
 };
 
 export default function ActivityBooking() {
+  const router = useRouter();
   const [quantities, setQuantities] = useState<
     Record<string, Record<string, Record<string, Record<string, number>>>>
   >({});
@@ -408,134 +410,168 @@ export default function ActivityBooking() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <Accordion type="multiple" className="space-y-6">
-          {Object.entries(activityData).map(([categoryName, categoryData]) => {
-            const CategoryIcon = categoryData.icon;
+      {/* Main Content Layout */}
+      <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+        {/* Left Column - Activities */}
+        <div className="flex-1">
+          <Accordion type="multiple" className="space-y-6">
+            {Object.entries(activityData).map(([categoryName, categoryData]) => {
+              const CategoryIcon = categoryData.icon;
 
-            return (
-              <div key={categoryName} className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <AccordionItem value={categoryName} className="border-none">
-                  <AccordionTrigger className={`${categoryData.bgColor} hover:shadow-md transition-all duration-200 px-6 py-6 hover:no-underline`}>
-                    <div className="flex items-center gap-4 w-full justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 bg-gradient-to-r ${categoryData.color} rounded-xl flex items-center justify-center shadow-md`}>
-                          <CategoryIcon className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="text-left">
-                          <h2 className="text-xl font-bold text-gray-900">{categoryName}</h2>
-                          <p className="text-sm text-gray-600">
-                            {categoryData.activities.length} experience{categoryData.activities.length > 1 ? 's' : ''} available
-                          </p>
+              return (
+                <div key={categoryName} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <AccordionItem value={categoryName} className="border-none">
+                    <AccordionTrigger className={`${categoryData.bgColor} hover:shadow-md transition-all duration-200 px-6 py-6 hover:no-underline`}>
+                      <div className="flex items-center gap-4 w-full justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 bg-gradient-to-r ${categoryData.color} rounded-xl flex items-center justify-center shadow-md`}>
+                            <CategoryIcon className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="text-left">
+                            <h2 className="text-xl font-bold text-gray-900">{categoryName}</h2>
+                            <p className="text-sm text-gray-600">
+                              {categoryData.activities.length} experience{categoryData.activities.length > 1 ? 's' : ''} available
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </AccordionTrigger>
+                    </AccordionTrigger>
 
-                  <AccordionContent className="px-6 pb-6">
-                    <Accordion type="multiple" className="space-y-4">
-                      {categoryData.activities
-                        .filter(
-                          (activity) =>
-                            searchTerm === "" ||
-                            activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            activity.description.toLowerCase().includes(searchTerm.toLowerCase())
-                        )
-                        .map((activity) => (
-                          <AccordionItem
-                            key={activity.title}
-                            value={activity.title}
-                            className="border border-gray-200 rounded-xl overflow-hidden"
-                          >
-                            <AccordionTrigger className="px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-200 hover:no-underline">
-                              <div className="flex items-center justify-between w-full mr-4">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                    <activity.icon className="w-4 h-4 text-[#174166]" />
-                                  </div>
-                                  <div className="text-left">
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-semibold text-gray-900">{activity.title}</span>
-                                      {activity.popular && (
-                                        <Badge className="bg-yellow-400 text-[#174166] hover:bg-yellow-500 text-xs">
-                                          Popular
-                                        </Badge>
-                                      )}
+                    <AccordionContent className="px-6 pb-6">
+                      <Accordion type="multiple" className="space-y-4">
+                        {categoryData.activities
+                          .filter(
+                            (activity) =>
+                              searchTerm === "" ||
+                              activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                              activity.description.toLowerCase().includes(searchTerm.toLowerCase())
+                          )
+                          .map((activity) => (
+                            <AccordionItem
+                              key={activity.title}
+                              value={activity.title}
+                              className="border border-gray-200 rounded-xl overflow-hidden"
+                            >
+                              <AccordionTrigger className="px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-200 hover:no-underline">
+                                <div className="flex items-center justify-between w-full mr-4">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                                      <activity.icon className="w-4 h-4 text-[#174166]" />
                                     </div>
-                                    <div className="flex items-center gap-3 text-xs text-gray-500">
-                                      <span>{activity.duration}</span>
-                                      <span>•</span>
-                                      <div className="flex items-center gap-1">
-                                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                        <span>{activity.rating}</span>
+                                    <div className="text-left">
+                                      <div className="flex items-center gap-2">
+                                        <span className="font-semibold text-gray-900">{activity.title}</span>
+                                        {activity.popular && (
+                                          <Badge className="bg-yellow-400 text-[#174166] hover:bg-yellow-500 text-xs">
+                                            Popular
+                                          </Badge>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                                        <span>{activity.duration}</span>
+                                        <span>•</span>
+                                        <div className="flex items-center gap-1">
+                                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                          <span>{activity.rating}</span>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
 
-                                <div className="flex items-center gap-2">
-                                  <div className="text-lg font-bold text-[#174166]">${activity.price}</div>
-                                  <div className="transition-transform duration-300 data-[state=open]:rotate-180">
-                                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                                  <div className="flex items-center gap-2">
+                                    <div className="text-lg font-bold text-[#174166]">${activity.price}</div>
+                                    <div className="transition-transform duration-300 data-[state=open]:rotate-180">
+                                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </AccordionTrigger>
+                              </AccordionTrigger>
 
-                            <AccordionContent className="p-4">
-                              {renderActivityTable(categoryName, activity)}
-                            </AccordionContent>
-                          </AccordionItem>
-                        ))}
-                    </Accordion>
-                  </AccordionContent>
-                </AccordionItem>
-              </div>
-            );
-          })}
-        </Accordion>
-
-        {/* Booking Summary */}
-        {getTotalBookings() > 0 && (
-          <Card className="mt-8 border-t-4 border-yellow-400 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
-                    <ShoppingCart className="w-5 h-5 text-[#174166]" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">Booking Summary</h3>
-                    <p className="text-sm text-gray-600">
-                      {getTotalBookings()} booking{getTotalBookings() > 1 ? "s" : ""} selected
-                    </p>
-                  </div>
+                              <AccordionContent className="p-4">
+                                {renderActivityTable(categoryName, activity)}
+                              </AccordionContent>
+                            </AccordionItem>
+                          ))}
+                      </Accordion>
+                    </AccordionContent>
+                  </AccordionItem>
                 </div>
-                <div className="sm:text-right text-left">
-                  <div className="text-2xl font-bold text-[#174166]">
-                    ${getTotalCost().toFixed(2)}
-                  </div>
-                  <div className="text-sm text-gray-500">Total cost</div>
-                </div>
-              </div>
+              );
+            })}
+          </Accordion>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-end">
+          {/* Pagination Buttons */}
+          <div className="mt-6">
+              <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent">
                 <Button
                   variant="outline"
                   className="border-gray-300 hover:border-gray-400"
-                  onClick={() => setQuantities({})}
+                  onClick={() => {
+                    // Handle previous
+                    console.log("Previous clicked");
+                    router.push("/addons"); // Navigate to Addons page
+                  }}
                 >
-                  Clear All
+                  ← Previous
                 </Button>
-                <Button className="bg-[#174166] hover:bg-[#1e4a73] px-8">
-                  Continue to Guest Info
+                <Button
+                  className="bg-[#174166] hover:bg-[#1e4a73]"
+                  onClick={() => {
+                    // Handle next
+                    console.log("Next clicked");
+                    router.push("/guest"); // Navigate to Guest Info page
+                  }}
+                >
+                  Next →
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+        </div>
 
+        {/* Right Column - Booking Summary */}
+        {getTotalBookings() > 0 && (
+          <div className="w-full lg:w-[320px] xl:w-[360px] sticky top-[35%] self-start h-fit">
+            <Card className="border-t-4 border-yellow-400 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                      <ShoppingCart className="w-5 h-5 text-[#174166]" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">Booking Summary</h3>
+                      <p className="text-sm text-gray-600">
+                        {getTotalBookings()} booking{getTotalBookings() > 1 ? "s" : ""} selected
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-[#174166]">
+                      ${getTotalCost().toFixed(2)}
+                    </div>
+                    <div className="text-sm text-gray-500">Total cost</div>
+                  </div>
+
+                  <div className="flex flex-col gap-2 mt-4">
+                    <Button
+                      variant="outline"
+                      className="border-gray-300 hover:border-gray-400"
+                      onClick={() => setQuantities({})}
+                    >
+                      Clear All
+                    </Button>
+                    <Button className="bg-[#174166] hover:bg-[#1e4a73]">
+                      Continue to Guest Info
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
+
 
       {/* Bottom CTA Section */}
       <div className="bg-[#174166] text-white py-16 mt-12">

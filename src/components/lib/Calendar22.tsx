@@ -1,44 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon } from "lucide-react";
+import * as React from "react";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../ui/calendar";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils"; // or your own `classnames` helper
+import { DateRange } from "react-day-picker";
 
-interface Calendar22Props {
-  label: string;
-  value: Date | undefined;
-  onChange: (date: Date | undefined) => void;
+
+interface CalendarRangeProps {
+  value: DateRange;
+  onChange: (range: DateRange) => void;
 }
 
-const Calendar22: React.FC<Calendar22Props> = ({ label, value, onChange }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const CalendarRange: React.FC<CalendarRangeProps> = ({ value, onChange }) => {
+  const [open, setOpen] = React.useState(false);
+
+  const formatted =
+    value.from && value.to
+      ? `${format(value.from, "EEE dd MMM")} — ${format(value.to, "EEE dd MMM")}`
+      : "Select date range";
 
   return (
     <div className="flex flex-col">
       <label className="block text-sm font-medium text-gray-600 mb-2">
-        {label}
+        Dates
       </label>
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-full justify-start text-left h-11 text-gray-900 border-gray-300 hover:border-[#174166] transition-all duration-200 rounded-lg"
+            className={cn(
+              "w-full justify-start text-left h-11 text-gray-900 border-gray-300 hover:border-[#174166] transition-all duration-200 rounded-lg"
+            )}
           >
             <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
-            {value ? format(value, "MMM dd, yyyy") : "Select date"}
+            {formatted}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 bg-white border border-gray-200 rounded-lg shadow-lg">
           <Calendar
-            mode="single"
+            mode="range"
+            showOutsideDays={false}
             selected={value}
-            onSelect={(date) => {
-              onChange(date);
-              setIsOpen(false);
-            }}
+            onSelect={(range) => range && onChange(range)}
+            numberOfMonths={2}
             initialFocus
             className="rounded-lg"
           />
@@ -48,4 +56,4 @@ const Calendar22: React.FC<Calendar22Props> = ({ label, value, onChange }) => {
   );
 };
 
-export { Calendar22 };
+export default CalendarRange;
