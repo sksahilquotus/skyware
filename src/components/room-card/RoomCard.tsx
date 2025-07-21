@@ -15,6 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { deselectRoom, increment, selectRoom } from "@/store/slices/counterSlice";
 
 type RoomCardProps = {
   title: string;
@@ -33,9 +35,14 @@ export const RoomCard = ({
   price,
   total,
 }: RoomCardProps) => {
+  const [deselectDialogOpen, setDeselectDialogOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const {addOnPrice, activityPrice, selectedRoomTitles } = useAppSelector((state) => state.counter);
   const router = useRouter();
   const [showAllAmenities, setShowAllAmenities] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
+  // const [isSelected, setIsSelected] = useState(false);
+  const isSelected = selectedRoomTitles.includes(title);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -172,8 +179,15 @@ export const RoomCard = ({
                         <Button
                           className="bg-[#174166]"
                           onClick={() => {
-                            setIsSelected(true);
+                            // setIsSelected(true);
                             router.push("/addons");
+                            dispatch(
+                              increment({
+                                addOnPrice: addOnPrice,
+                                activityPrice: activityPrice,
+                              })
+                            );
+                            dispatch(selectRoom({ title, price: total }));
                           }}
                         >
                           Confirm
@@ -184,7 +198,16 @@ export const RoomCard = ({
 
                 </Dialog>
               ) : (
-                <Button disabled className="w-full sm:w-auto px-4 bg-orange-400">
+                <Button className="w-full sm:w-auto px-4 bg-orange-400" onClick={() => {
+                  // dispatch(
+                  //   increment({
+                  //     addOnPrice: addOnPrice,
+                  //     activityPrice: activityPrice,
+                  //   })
+                  // );
+                  setDeselectDialogOpen(true)
+                 
+                }}>
                   Selected · ${price.toFixed(2)}
                 </Button>
               )}
@@ -237,7 +260,38 @@ export const RoomCard = ({
         </DialogContent>
       </Dialog>
 
+      <Dialog open={deselectDialogOpen} onOpenChange={setDeselectDialogOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Deselect Room</DialogTitle>
+          </DialogHeader>
 
+          <div className="text-gray-700 mb-4 space-y-1">
+            <p>
+              Are you sure you want to <strong>deselect</strong> <em>{title}</em>?
+            </p>
+            <p className="text-sm text-gray-600">
+              This will remove the room and deduct <strong>${total.toFixed(2)}</strong> from your total.
+            </p>
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button
+                className="bg-[#174166]"
+                onClick={() => {
+                  dispatch(deselectRoom({ title, price: total }));
+                }}
+              >
+                Deselect
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

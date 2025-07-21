@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Clock,
   Star,
@@ -28,6 +27,10 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { decrement, increment, resetActivity, resetAddOns, resetRooms, setActivityQuantity } from "@/store/slices/counterSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const timeSlots = [
   "10:30 AM - 11:30 AM",
@@ -194,35 +197,79 @@ type Activity = {
   popular?: boolean;
 };
 
+// utils/date.ts
+export const getDateKey = (date: string) => {
+  return new Date(date).toISOString().split("T")[0]; // e.g., "2025-07-24"
+};
+
+
 export default function ActivityBooking() {
+  const quantities = useSelector((state: RootState) => state.counter.activityQuantities);
+  const dispatch = useAppDispatch();
+  const { roomPrice, addOnPrice, activityPrice, totalPrice } = useAppSelector((state) => state.counter);
   const router = useRouter();
-  const [quantities, setQuantities] = useState<
-    Record<string, Record<string, Record<string, Record<string, number>>>>
-  >({});
+  // const [quantities, setQuantities] = useState<
+  //   Record<string, Record<string, Record<string, Record<string, number>>>>
+  // >({});
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState("");
 
+  // const handleQuantity = (
+  //   category: string,
+  //   activity: string,
+  //   date: string,
+  //   timeSlot: string,
+  //   delta: number
+  // ) => {
+  //   setQuantities((prev) => ({
+  //     ...prev,
+  //     [category]: {
+  //       ...prev[category],
+  //       [activity]: {
+  //         ...prev[category]?.[activity],
+  //         [date]: {
+  //           ...prev[category]?.[activity]?.[date],
+  //           [timeSlot]:
+  //             Math.max(0, (prev[category]?.[activity]?.[date]?.[timeSlot] || 0) + delta),
+  //         },
+  //       },
+  //     },
+  //   }));
+  // };
+
+
   const handleQuantity = (
     category: string,
-    activity: string,
+    activityTitle: string,
     date: string,
     timeSlot: string,
     delta: number
   ) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [activity]: {
-          ...prev[category]?.[activity],
-          [date]: {
-            ...prev[category]?.[activity]?.[date],
-            [timeSlot]:
-              Math.max(0, (prev[category]?.[activity]?.[date]?.[timeSlot] || 0) + delta),
-          },
-        },
-      },
-    }));
+    const dateKey = getDateKey(date);
+
+    const activity = activityData[category as keyof typeof activityData]?.activities.find(
+      (a) => a.title === activityTitle
+    );
+    const price = activity?.price || 0;
+
+    // const currentQty =
+    //   quantities?.[category]?.[activityTitle]?.[dateKey]?.[timeSlot] || 0;
+
+    if (delta > 0) {
+      dispatch(increment({ activityPrice: price }));
+    } else if (delta < 0) {
+      dispatch(decrement({ activityPrice: price }));
+    }
+
+    dispatch(
+      setActivityQuantity({
+        category,
+        title: activityTitle,
+        date: dateKey,
+        timeSlot,
+        delta, // only pass delta, reducer handles addition
+      })
+    );
   };
 
   const toggleFavorite = (activityKey: string) => {
@@ -237,37 +284,37 @@ export default function ActivityBooking() {
     });
   };
 
-  const getTotalBookings = () => {
-    let total = 0;
-    Object.values(quantities).forEach((category) => {
-      Object.values(category).forEach((activity) => {
-        Object.values(activity).forEach((date) => {
-          Object.values(date).forEach((qty) => {
-            total += qty;
-          });
-        });
-      });
-    });
-    return total;
-  };
+  // const getTotalBookings = () => {
+  //   let total = 0;
+  //   Object.values(quantities).forEach((category) => {
+  //     Object.values(category).forEach((activity) => {
+  //       Object.values(activity).forEach((date) => {
+  //         Object.values(date).forEach((qty) => {
+  //           total += qty;
+  //         });
+  //       });
+  //     });
+  //   });
+  //   return total;
+  // };
 
-  const getTotalCost = () => {
-    let total = 0;
-    Object.entries(quantities).forEach(([category, categoryData]) => {
-      Object.entries(categoryData).forEach(([activityTitle, activityBookingData]) => {
-        const activity = activityData[category as keyof typeof activityData]?.activities.find(
-          (act) => act.title === activityTitle
-        );
-        const price = activity?.price || 0;
-        Object.values(activityBookingData).forEach((dateData) => {
-          Object.values(dateData).forEach((qty) => {
-            total += qty * price;
-          });
-        });
-      });
-    });
-    return total;
-  };
+  // const getTotalCost = () => {
+  //   let total = 0;
+  //   Object.entries(quantities).forEach(([category, categoryData]) => {
+  //     Object.entries(categoryData).forEach(([activityTitle, activityBookingData]) => {
+  //       const activity = activityData[category as keyof typeof activityData]?.activities.find(
+  //         (act) => act.title === activityTitle
+  //       );
+  //       const price = activity?.price || 0;
+  //       Object.values(activityBookingData).forEach((dateData) => {
+  //         Object.values(dateData).forEach((qty) => {
+  //           total += qty * price;
+  //         });
+  //       });
+  //     });
+  //   });
+  //   return total;
+  // };
 
   const renderActivityTable = (category: string, activity: Activity) => {
     const activityKey = `${category}-${activity.title}`;
@@ -341,39 +388,47 @@ export default function ActivityBooking() {
               </div>
 
               {dates.map((date) => {
-                const currentQty = quantities[category]?.[activity.title]?.[date.value]?.[timeSlot] || 0;
+                const dateKey = getDateKey(date.value); // format: "yyyy-MM-dd"
+
+                const currentQty =
+                  quantities[category]?.[activity.title]?.[dateKey]?.[timeSlot] || 0;
+
 
                 return (
-                  <div key={date.value} className="flex items-center justify-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-8 h-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-[#174166] hover:text-white"
-                      onClick={() => handleQuantity(category, activity.title, date.value, timeSlot, -1)}
-                      disabled={currentQty === 0}
-                    >
-                      <Minus className="w-3 h-3" />
-                    </Button>
+                  <div key={date.value} className="flex items-center justify-center gap-2 flex-col lg:flex-row lg:flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-8 h-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-[#174166] hover:text-white"
+                        onClick={() => handleQuantity(category, activity.title, date.value, timeSlot, -1)}
+                        disabled={currentQty === 0}
+                      >
+                        <Minus className="w-3 h-3" />
+                      </Button>
 
-                    <div className="w-12 text-center">
-                      <span className="text-sm font-semibold text-gray-900">{currentQty}</span>
+                      <div className="w-12 text-center">
+                        <span className="text-sm font-semibold text-gray-900">{currentQty}</span>
+                      </div>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-8 h-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-[#174166] hover:text-white"
+                        onClick={() => handleQuantity(category, activity.title, date.value, timeSlot, 1)}
+                      >
+                        <Plus className="w-3 h-3" />
+                      </Button>
                     </div>
 
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-8 h-8 p-0 rounded-full border-gray-300 hover:border-[#174166] hover:bg-[#174166] hover:text-white"
-                      onClick={() => handleQuantity(category, activity.title, date.value, timeSlot, 1)}
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-
                     {currentQty > 0 && (
-                      <div className="ml-2 text-xs text-green-600 font-medium">
+                      <div className="text-xs text-green-600 font-medium lg:ml-2 lg:mt-0 mt-1">
                         ${(currentQty * activity.price).toFixed(2)}
                       </div>
                     )}
                   </div>
+
+
                 );
               })}
             </div>
@@ -502,74 +557,114 @@ export default function ActivityBooking() {
 
           {/* Pagination Buttons */}
           <div className="mt-6">
-              <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent">
-                <Button
-                  variant="outline"
-                  className="border-gray-300 hover:border-gray-400"
-                  onClick={() => {
-                    // Handle previous
-                    console.log("Previous clicked");
-                    router.push("/addons"); // Navigate to Addons page
-                  }}
-                >
-                  ← Previous
-                </Button>
-                <Button
-                  className="bg-[#174166] hover:bg-[#1e4a73]"
-                  onClick={() => {
-                    // Handle next
-                    console.log("Next clicked");
-                    router.push("/guest"); // Navigate to Guest Info page
-                  }}
-                >
-                  Next →
-                </Button>
-              </div>
+            <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
+              <Button
+                variant="outline"
+                className="border-gray-300 hover:border-gray-400"
+                onClick={() => {
+
+                  console.log("Previous clicked");
+                  router.push("/");
+                }}
+              >
+                ← Previous
+              </Button>
+              <Button
+                className="bg-[#174166] hover:bg-[#1e4a73]"
+                onClick={() => {
+
+                  console.log("Next clicked");
+                  router.push("/activities");
+                }}
+              >
+                Next →
+              </Button>
             </div>
+          </div>
         </div>
 
         {/* Right Column - Booking Summary */}
-        {getTotalBookings() > 0 && (
-          <div className="w-full lg:w-[320px] xl:w-[360px] sticky top-[35%] self-start h-fit">
-            <Card className="border-t-4 border-yellow-400 shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
-                      <ShoppingCart className="w-5 h-5 text-[#174166]" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">Booking Summary</h3>
-                      <p className="text-sm text-gray-600">
-                        {getTotalBookings()} booking{getTotalBookings() > 1 ? "s" : ""} selected
-                      </p>
-                    </div>
+        {/* {getTotalBookings() > 0 && ( */}
+        <div className="w-full lg:w-[300px] flex-shrink-0">
+          <div className="sticky top-20 lg:top-[40%] xl:top-[38%]">
+            <div className="bg-white rounded-xl xl:rounded-2xl shadow p-3 xl:p-4 border-t-4 border-yellow-400">
+              <div className="flex flex-col gap-1 xl:gap-2 mb-1 xl:mb-2">
+                <div className="flex items-center gap-2 xl:gap-3">
+                  <div className="w-7 h-7 xl:w-8 xl:h-8 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <ShoppingCart className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-[#174166]" />
                   </div>
-
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-[#174166]">
-                      ${getTotalCost().toFixed(2)}
-                    </div>
-                    <div className="text-sm text-gray-500">Total cost</div>
-                  </div>
-
-                  <div className="flex flex-col gap-2 mt-4">
-                    <Button
-                      variant="outline"
-                      className="border-gray-300 hover:border-gray-400"
-                      onClick={() => setQuantities({})}
-                    >
-                      Clear All
-                    </Button>
-                    <Button className="bg-[#174166] hover:bg-[#1e4a73]">
-                      Continue to Guest Info
-                    </Button>
+                  <div>
+                    <h3 className="text-base xl:text-lg font-medium xl:font-semibold text-gray-900 leading-none">
+                      Cart Summary
+                    </h3>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                {roomPrice > 0 && (
+                  <div className="text-left">
+                    <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                      ${roomPrice.toFixed(2)}
+                    </div>
+                    <div className="text-xs xl:text-sm text-gray-500">Room cost</div>
+                  </div>
+                )}
+
+                {addOnPrice > 0 && (
+                  <div className="text-left">
+                    <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                      ${addOnPrice.toFixed(2)}
+                    </div>
+                    <div className="text-xs xl:text-sm text-gray-500">Total add-ons cost</div>
+                  </div>
+                )}
+
+                {activityPrice > 0 && (
+                  <div className="text-left">
+                    <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                      ${activityPrice.toFixed(2)}
+                    </div>
+                    <div className="text-xs xl:text-sm text-gray-500">Total activity cost</div>
+                  </div>
+                )}
+
+                <div className="text-left">
+                  <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                    ${totalPrice.toFixed(2)}
+                  </div>
+                  <div className="text-xs xl:text-sm text-gray-500">Total cost</div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 mt-2">
+                {/* <Button
+                    variant="outline"
+                    className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
+                    onClick={() => {
+                      dispatch(resetActivity());
+                    }}
+                  >
+                    Clear All activity
+                </Button> */}
+                <Button
+                  variant="outline"
+                  className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
+                  onClick={() => {
+                    dispatch(resetAddOns());
+                    dispatch(resetRooms());
+                    dispatch(resetActivity());
+                  }}
+                >
+                  Clear All
+                </Button>
+                <Button className="bg-[#174166] hover:bg-[#1e4a73] px-3 xl:px-4 py-1 xl:py-2 text-xs xl:text-sm h-auto" onClick={() => {router.push("/guest")}}>
+                  Continue to guest form
+                </Button>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* )} */}
       </div>
 
 

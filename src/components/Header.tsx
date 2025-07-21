@@ -55,7 +55,7 @@ const Header = () => {
         {/* Search Form */}
         <div className="pb-4">
           <div className="bg-white rounded-xl shadow-md p-4 border-t-4 border-yellow-400">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
               
               {/* Date Range Selector */}
               <div className="xl:col-span-1">
