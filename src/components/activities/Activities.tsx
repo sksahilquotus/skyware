@@ -557,7 +557,7 @@ export default function ActivityBooking() {
 
           {/* Pagination Buttons */}
           <div className="mt-6">
-            <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
+            <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 md:right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
               <Button
                 variant="outline"
                 className="border-gray-300 hover:border-gray-400"
