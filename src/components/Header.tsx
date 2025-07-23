@@ -25,8 +25,8 @@ const Header = () => {
   useEffect(() => {
     console.log("Date Range Changed:", dateRange);
     if (dateRange?.from && dateRange?.to) {
-      const formattedCheckIn = format(new Date(dateRange.from), "EEE dd"); // e.g., "Fri 18"
-      const formattedCheckOut = format(new Date(dateRange.to), "EEE dd");  // e.g., "Tue 23"
+      const formattedCheckIn = format(new Date(dateRange.from), "MMMM dd, yyyy");
+      const formattedCheckOut = format(new Date(dateRange.to), "MMMM dd, yyyy");
 
       dispatch(setCheckInDate({ date: formattedCheckIn }));
       dispatch(setCheckOutDate({ date: formattedCheckOut }));

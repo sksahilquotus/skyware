@@ -10,6 +10,7 @@ import { Clock, Star, Heart, Plus, Minus, ShoppingCart, Sparkles, Waves, Zap, Fl
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { getDayAndDate } from "../addons/Addons";
 
 const timeSlots = [
   "10:30 AM - 11:30 AM",
@@ -182,8 +183,8 @@ export default function ActivityBooking() {
   const dispatch = useAppDispatch();
   const { roomPrice, addOnPrice, activityPrice, totalPrice, checkInDate, checkOutDate } = useAppSelector((state) => state.counter);
   const dates = [
-    { label: checkInDate, value: "2025-07-23", fullDate: "July 23, 2025" },
-    { label: checkOutDate, value: "2025-07-24", fullDate: "July 24, 2025" },
+    { label: getDayAndDate(checkInDate || ""), value: "2025-07-23", fullDate: checkInDate },
+    { label: getDayAndDate(checkOutDate || ""), value: "2025-07-24", fullDate: checkOutDate },
   ];
   const router = useRouter();
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -539,7 +540,7 @@ export default function ActivityBooking() {
           </div>
         </div>
         <div className="w-full lg:w-[300px] flex-shrink-0">
-          <div className="sticky top-20 lg:top-[40%] xl:top-[38%]">
+          <div className="lg:sticky lg:top-[40%] xl:top-[40%]">
             <div className="bg-white rounded-xl xl:rounded-2xl shadow p-3 xl:p-4 border-t-4 border-yellow-400">
               <div className="flex flex-col gap-1 xl:gap-2 mb-1 xl:mb-2">
                 <div className="flex items-center gap-2 xl:gap-3">

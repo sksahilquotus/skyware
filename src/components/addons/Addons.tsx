@@ -22,6 +22,18 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { decrement, increment, resetActivity, resetAddOns, resetRooms, setAddOnQuantity } from "@/store/slices/counterSlice";
 
+export function getDayAndDate(dateString: string): string {
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  const day = date.toLocaleDateString('en-US', { weekday: 'short' }); // e.g., "Wed"
+  const dateNum = date.getDate(); // e.g., 23
+
+  return `${day} ${dateNum}`;
+}
 // Types
 type AddOnItem = {
   title: string;
@@ -118,8 +130,8 @@ export default function AddOns() {
   // console.log("Check In Date:", checkInDate);
   // console.log("Check Out Date:", checkOutDate);
   const dates = [
-    { label: checkInDate, value: "2025-07-23", fullDate: "July 23, 2025" },
-    { label: checkOutDate, value: "2025-07-24", fullDate: "July 24, 2025" },
+    { label: getDayAndDate(checkInDate || ""), value: "2025-07-23", fullDate: checkInDate },
+    { label: getDayAndDate(checkOutDate || ""), value: "2025-07-24", fullDate: checkOutDate },
   ];
   const router = useRouter();
   // const [quantities, setQuantities] = useState<Record<string, Record<string, number>>>({});
@@ -385,7 +397,7 @@ export default function AddOns() {
           {/* Right: Summary Sidebar */}
           {/* {getTotalItems() > 0 && ( */}
           <div className="w-full lg:w-[300px] flex-shrink-0">
-            <div className="sticky top-20 lg:top-[40%] xl:top-[38%]">
+            <div className="lg:sticky lg:top-[40%] xl:top-[40%]">
               <div className="bg-white rounded-xl xl:rounded-2xl shadow p-3 xl:p-4 border-t-4 border-yellow-400">
                 <div className="flex flex-col gap-1 xl:gap-2 mb-1 xl:mb-2">
                   <div className="flex items-center gap-2 xl:gap-3">

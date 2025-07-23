@@ -143,24 +143,26 @@ export default function CheckoutForm() {
                     <Input id="lastName" value={formData.lastName} onChange={(e) => handleInputChange("lastName", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" required />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <Mail className="w-4 h-4" /> Email Address *
-                  </Label>
-                  <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <Phone className="w-4 h-4" /> Phone Number *
-                  </Label>
-                  <Input id="phone" type="tel" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" required />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <Mail className="w-4 h-4" /> Email Address *
+                    </Label>
+                    <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <Phone className="w-4 h-4" /> Phone Number *
+                    </Label>
+                    <Input id="phone" type="tel" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" required />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="country" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Globe className="w-4 h-4" /> Country *
                   </Label>
                   <Select value={formData.country} onValueChange={(value) => handleInputChange("country", value)}>
-                    <SelectTrigger className="w-[100%] h-12 border-gray-300 focus:border-[#174166] rounded-lg">
+                    <SelectTrigger className="w-[100%] h-[100%] border-gray-300 focus:border-[#174166] rounded-lg">
                       <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
                     <SelectContent>
@@ -172,15 +174,17 @@ export default function CheckoutForm() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address1" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <Home className="w-4 h-4" /> Address Line 1 *
-                  </Label>
-                  <Input id="address1" value={formData.address1} onChange={(e) => handleInputChange("address1", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address2" className="text-sm font-medium text-gray-700">Address Line 2</Label>
-                  <Input id="address2" value={formData.address2} onChange={(e) => handleInputChange("address2", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="address1" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <Home className="w-4 h-4" /> Address Line 1 *
+                    </Label>
+                    <Input id="address1" value={formData.address1} onChange={(e) => handleInputChange("address1", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="address2" className="text-sm font-medium text-gray-700">Address Line 2</Label>
+                    <Input id="address2" value={formData.address2} onChange={(e) => handleInputChange("address2", e.target.value)} className="h-12 border-gray-300 focus:border-[#174166] focus:ring-[#174166] rounded-lg" />
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
