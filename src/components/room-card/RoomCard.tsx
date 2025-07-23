@@ -271,7 +271,7 @@ export const RoomCard = ({
               Are you sure you want to <strong>deselect</strong> <em>{title}</em>?
             </p>
             <p className="text-sm text-gray-600">
-              This will remove the room and deduct <strong>${total.toFixed(2)}</strong> from your total.
+              This will remove the room and deduct <strong>${price.toFixed(2)}</strong> from your total.
             </p>
           </div>
 
@@ -283,7 +283,7 @@ export const RoomCard = ({
               <Button
                 className="bg-[#174166]"
                 onClick={() => {
-                  dispatch(deselectRoom({ title, price: total }));
+                  dispatch(deselectRoom({ title, price: price }));
                 }}
               >
                 Deselect

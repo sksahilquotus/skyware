@@ -11,6 +11,8 @@ interface CounterState {
     string,
     Record<string, Record<string, Record<string, number>>>
   >;
+  checkInDate?: string; // Optional, if needed
+  checkOutDate?: string; // Optional, if needed
 }
 
 const initialState: CounterState = {
@@ -21,6 +23,8 @@ const initialState: CounterState = {
   selectedRoomTitles: [],
   addOnQuantities: {},
   activityQuantities: {},
+  checkInDate: undefined, // Optional, if needed
+  checkOutDate: undefined, // Optional, if needed
 };
 
 const counterSlice = createSlice({
@@ -112,8 +116,16 @@ const counterSlice = createSlice({
       state.activityPrice = 0;
       state.totalPrice = state.roomPrice + state.addOnPrice;
     },
+    setCheckInDate: (state, action) => {
+      const { date } = action.payload;
+      state.checkInDate = date;
+    },
+    setCheckOutDate: (state, action) => {
+      const { date } = action.payload;
+      state.checkOutDate = date;
+    }
   },
 });
 
-export const { increment, decrement, selectRoom, deselectRoom, resetRooms, setAddOnQuantity, resetAddOns, setActivityQuantity, resetActivity } = counterSlice.actions;
+export const { increment, decrement, selectRoom, deselectRoom, resetRooms, setAddOnQuantity, resetAddOns, setActivityQuantity, resetActivity, setCheckInDate, setCheckOutDate } = counterSlice.actions;
 export default counterSlice.reducer;

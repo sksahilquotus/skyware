@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { decrement, increment, resetAddOns, setAddOnQuantity } from "@/store/slices/counterSlice";
+import { decrement, increment, resetActivity, resetAddOns, resetRooms, setAddOnQuantity } from "@/store/slices/counterSlice";
 
 // Types
 type AddOnItem = {
@@ -39,10 +39,10 @@ type AddOnCategory = {
   color: string;
 };
 
-const dates = [
-  { label: "Tue 23", value: "2025-07-23", fullDate: "July 23, 2025" },
-  { label: "Wed 24", value: "2025-07-24", fullDate: "July 24, 2025" },
-];
+// const dates = [
+//   { label: "Tue 23", value: "2025-07-23", fullDate: "July 23, 2025" },
+//   { label: "Wed 24", value: "2025-07-24", fullDate: "July 24, 2025" },
+// ];
 
 const addOnData: AddOnCategory[] = [
   {
@@ -114,7 +114,13 @@ const addOnData: AddOnCategory[] = [
 
 export default function AddOns() {
   const dispatch = useAppDispatch();
-  const { roomPrice, addOnPrice, activityPrice, totalPrice } = useAppSelector((state) => state.counter);
+  const { roomPrice, addOnPrice, activityPrice, totalPrice, checkInDate, checkOutDate } = useAppSelector((state) => state.counter);
+  // console.log("Check In Date:", checkInDate);
+  // console.log("Check Out Date:", checkOutDate);
+  const dates = [
+    { label: checkInDate, value: "2025-07-23", fullDate: "July 23, 2025" },
+    { label: checkOutDate, value: "2025-07-24", fullDate: "July 24, 2025" },
+  ];
   const router = useRouter();
   // const [quantities, setQuantities] = useState<Record<string, Record<string, number>>>({});
   const quantities = useAppSelector((state) => state.counter.addOnQuantities);
@@ -429,7 +435,7 @@ export default function AddOns() {
                 </div>
 
                 <div className="flex flex-col gap-2 mt-2">
-                  {/* <Button
+                  <Button
                       variant="outline"
                       className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
                       onClick={() => {
@@ -438,15 +444,15 @@ export default function AddOns() {
                       }}
                     >
                       Clear All Add-ons
-                    </Button> */}
+                    </Button>
                   <Button
                     variant="outline"
                     className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
                     onClick={() => {
                       console.log("Resetting add-ons");
                       dispatch(resetAddOns());
-                      // dispatch(resetRooms());
-                      // dispatch(resetActivity());
+                      dispatch(resetRooms());
+                      dispatch(resetActivity());
                     }}
                   >
                     Clear All

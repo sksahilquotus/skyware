@@ -1,36 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Clock,
-  Star,
-  Heart,
-  Plus,
-  Minus,
-  ShoppingCart,
-  Sparkles,
-  Waves,
-  Zap,
-  Flower2,
-  Fish,
-  Search,
-  Filter,
-  ChevronDown,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { decrement, increment, resetActivity, resetAddOns, resetRooms, setActivityQuantity } from "@/store/slices/counterSlice";
-import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Clock, Star, Heart, Plus, Minus, ShoppingCart, Sparkles, Waves, Zap, Flower2, Fish, Search, Filter, ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 const timeSlots = [
   "10:30 AM - 11:30 AM",
@@ -43,11 +22,6 @@ const timeSlots = [
   "05:30 PM - 06:30 PM",
   "06:30 PM - 07:30 PM",
   "07:30 PM - 08:30 PM",
-];
-
-const dates = [
-  { label: "Tue 23", value: "2025-07-23", fullDate: "July 23, 2025" },
-  { label: "Wed 24", value: "2025-07-24", fullDate: "July 24, 2025" },
 ];
 
 const activityData = {
@@ -197,46 +171,42 @@ type Activity = {
   popular?: boolean;
 };
 
-// utils/date.ts
 export const getDateKey = (date: string) => {
-  return new Date(date).toISOString().split("T")[0]; // e.g., "2025-07-24"
+  return new Date(date).toISOString().split("T")[0];
 };
 
-
 export default function ActivityBooking() {
-  const quantities = useSelector((state: RootState) => state.counter.activityQuantities);
+  const [openAccordionItems, setOpenAccordionItems] = useState<string[]>([]);
+  const [openCategories, setOpenCategories] = useState<string[]>([]); // New state for outer accordion
+  const quantities = useAppSelector((state: RootState) => state.counter.activityQuantities);
   const dispatch = useAppDispatch();
-  const { roomPrice, addOnPrice, activityPrice, totalPrice } = useAppSelector((state) => state.counter);
+  const { roomPrice, addOnPrice, activityPrice, totalPrice, checkInDate, checkOutDate } = useAppSelector((state) => state.counter);
+  const dates = [
+    { label: checkInDate, value: "2025-07-23", fullDate: "July 23, 2025" },
+    { label: checkOutDate, value: "2025-07-24", fullDate: "July 24, 2025" },
+  ];
   const router = useRouter();
-  // const [quantities, setQuantities] = useState<
-  //   Record<string, Record<string, Record<string, Record<string, number>>>>
-  // >({});
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState("");
 
-  // const handleQuantity = (
-  //   category: string,
-  //   activity: string,
-  //   date: string,
-  //   timeSlot: string,
-  //   delta: number
-  // ) => {
-  //   setQuantities((prev) => ({
-  //     ...prev,
-  //     [category]: {
-  //       ...prev[category],
-  //       [activity]: {
-  //         ...prev[category]?.[activity],
-  //         [date]: {
-  //           ...prev[category]?.[activity]?.[date],
-  //           [timeSlot]:
-  //             Math.max(0, (prev[category]?.[activity]?.[date]?.[timeSlot] || 0) + delta),
-  //         },
-  //       },
-  //     },
-  //   }));
-  // };
-
+  // Initialize both openAccordionItems and openCategories from quantities
+  useEffect(() => {
+    const openItems: string[] = [];
+    const openCats: string[] = [];
+    Object.entries(quantities).forEach(([category, categoryData]) => {
+      Object.keys(categoryData).forEach((activityTitle) => {
+        const hasQuantities = Object.values(categoryData[activityTitle]).some(dateData =>
+          Object.values(dateData).some(qty => qty > 0)
+        );
+        if (hasQuantities) {
+          if (!openItems.includes(activityTitle)) openItems.push(activityTitle);
+          if (!openCats.includes(category)) openCats.push(category);
+        }
+      });
+    });
+    setOpenAccordionItems(openItems);
+    setOpenCategories(openCats);
+  }, [quantities]);
 
   const handleQuantity = (
     category: string,
@@ -246,14 +216,12 @@ export default function ActivityBooking() {
     delta: number
   ) => {
     const dateKey = getDateKey(date);
-
     const activity = activityData[category as keyof typeof activityData]?.activities.find(
       (a) => a.title === activityTitle
     );
     const price = activity?.price || 0;
-
-    // const currentQty =
-    //   quantities?.[category]?.[activityTitle]?.[dateKey]?.[timeSlot] || 0;
+    const currentQty = quantities?.[category]?.[activityTitle]?.[dateKey]?.[timeSlot] || 0;
+    const newQty = Math.max(0, currentQty + delta);
 
     if (delta > 0) {
       dispatch(increment({ activityPrice: price }));
@@ -261,15 +229,59 @@ export default function ActivityBooking() {
       dispatch(decrement({ activityPrice: price }));
     }
 
-    dispatch(
-      setActivityQuantity({
-        category,
-        title: activityTitle,
-        date: dateKey,
-        timeSlot,
-        delta, // only pass delta, reducer handles addition
-      })
-    );
+    dispatch(setActivityQuantity({ category, title: activityTitle, date: dateKey, timeSlot, delta }));
+
+    // Update openAccordionItems and openCategories
+    setOpenAccordionItems(prev => {
+      const updatedQuantities = {
+        ...quantities,
+        [category]: {
+          ...quantities[category],
+          [activityTitle]: {
+            ...quantities[category]?.[activityTitle],
+            [dateKey]: {
+              ...quantities[category]?.[activityTitle]?.[dateKey],
+              [timeSlot]: newQty,
+            },
+          },
+        },
+      };
+      const hasQuantities = Object.values(updatedQuantities[category]?.[activityTitle] || {}).some(
+        dateData => Object.values(dateData).some(qty => qty > 0)
+      );
+      if (newQty > 0 && !prev.includes(activityTitle)) {
+        return [...prev, activityTitle];
+      } else if (!hasQuantities && prev.includes(activityTitle)) {
+        return prev.filter(item => item !== activityTitle);
+      }
+      return prev;
+    });
+
+    // Ensure category is open if activity has quantities
+    setOpenCategories(prev => {
+      const updatedQuantities = {
+        ...quantities,
+        [category]: {
+          ...quantities[category],
+          [activityTitle]: {
+            ...quantities[category]?.[activityTitle],
+            [dateKey]: {
+              ...quantities[category]?.[activityTitle]?.[dateKey],
+              [timeSlot]: newQty,
+            },
+          },
+        },
+      };
+      const hasQuantities = Object.values(updatedQuantities[category] || {}).some(activityData =>
+        Object.values(activityData).some(dateData => Object.values(dateData).some(qty => qty > 0))
+      );
+      if (newQty > 0 && !prev.includes(category)) {
+        return [...prev, category];
+      } else if (!hasQuantities && prev.includes(category)) {
+        return prev.filter(item => item !== category);
+      }
+      return prev;
+    });
   };
 
   const toggleFavorite = (activityKey: string) => {
@@ -284,44 +296,10 @@ export default function ActivityBooking() {
     });
   };
 
-  // const getTotalBookings = () => {
-  //   let total = 0;
-  //   Object.values(quantities).forEach((category) => {
-  //     Object.values(category).forEach((activity) => {
-  //       Object.values(activity).forEach((date) => {
-  //         Object.values(date).forEach((qty) => {
-  //           total += qty;
-  //         });
-  //       });
-  //     });
-  //   });
-  //   return total;
-  // };
-
-  // const getTotalCost = () => {
-  //   let total = 0;
-  //   Object.entries(quantities).forEach(([category, categoryData]) => {
-  //     Object.entries(categoryData).forEach(([activityTitle, activityBookingData]) => {
-  //       const activity = activityData[category as keyof typeof activityData]?.activities.find(
-  //         (act) => act.title === activityTitle
-  //       );
-  //       const price = activity?.price || 0;
-  //       Object.values(activityBookingData).forEach((dateData) => {
-  //         Object.values(dateData).forEach((qty) => {
-  //           total += qty * price;
-  //         });
-  //       });
-  //     });
-  //   });
-  //   return total;
-  // };
-
   const renderActivityTable = (category: string, activity: Activity) => {
     const activityKey = `${category}-${activity.title}`;
-
     return (
       <div className="mt-6 overflow-x-auto">
-        {/* Activity Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4 p-4 bg-gray-50 rounded-xl">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
@@ -361,8 +339,6 @@ export default function ActivityBooking() {
             <Heart className={`w-5 h-5 ${favorites.has(activityKey) ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
         </div>
-
-        {/* Date Headers */}
         <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr_1fr] gap-4 mb-4">
           <div></div>
           {dates.map((date) => (
@@ -374,8 +350,6 @@ export default function ActivityBooking() {
             </div>
           ))}
         </div>
-
-        {/* Time Slots */}
         <div className="space-y-2">
           {timeSlots.map((timeSlot) => (
             <div
@@ -386,14 +360,9 @@ export default function ActivityBooking() {
                 <Clock className="w-4 h-4 text-gray-400" />
                 <span className="text-sm font-medium text-gray-700">{timeSlot}</span>
               </div>
-
               {dates.map((date) => {
-                const dateKey = getDateKey(date.value); // format: "yyyy-MM-dd"
-
-                const currentQty =
-                  quantities[category]?.[activity.title]?.[dateKey]?.[timeSlot] || 0;
-
-
+                const dateKey = getDateKey(date.value);
+                const currentQty = quantities[category]?.[activity.title]?.[dateKey]?.[timeSlot] || 0;
                 return (
                   <div key={date.value} className="flex items-center justify-center gap-2 flex-col lg:flex-row lg:flex-wrap">
                     <div className="flex items-center gap-2">
@@ -406,11 +375,9 @@ export default function ActivityBooking() {
                       >
                         <Minus className="w-3 h-3" />
                       </Button>
-
                       <div className="w-12 text-center">
                         <span className="text-sm font-semibold text-gray-900">{currentQty}</span>
                       </div>
-
                       <Button
                         size="sm"
                         variant="outline"
@@ -420,15 +387,12 @@ export default function ActivityBooking() {
                         <Plus className="w-3 h-3" />
                       </Button>
                     </div>
-
                     {currentQty > 0 && (
                       <div className="text-xs text-green-600 font-medium lg:ml-2 lg:mt-0 mt-1">
                         ${(currentQty * activity.price).toFixed(2)}
                       </div>
                     )}
                   </div>
-
-
                 );
               })}
             </div>
@@ -440,7 +404,6 @@ export default function ActivityBooking() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header Section */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-gray-50 rounded-2xl p-4">
@@ -463,16 +426,11 @@ export default function ActivityBooking() {
           </div>
         </div>
       </div>
-
-      {/* Main Content */}
-      {/* Main Content Layout */}
       <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-        {/* Left Column - Activities */}
         <div className="flex-1">
-          <Accordion type="multiple" className="space-y-6">
+          <Accordion type="multiple" value={openCategories} onValueChange={setOpenCategories} className="space-y-6">
             {Object.entries(activityData).map(([categoryName, categoryData]) => {
               const CategoryIcon = categoryData.icon;
-
               return (
                 <div key={categoryName} className="bg-white rounded-2xl shadow-lg overflow-hidden">
                   <AccordionItem value={categoryName} className="border-none">
@@ -491,9 +449,13 @@ export default function ActivityBooking() {
                         </div>
                       </div>
                     </AccordionTrigger>
-
                     <AccordionContent className="px-6 pb-6">
-                      <Accordion type="multiple" className="space-y-4">
+                      <Accordion
+                        type="multiple"
+                        value={openAccordionItems}
+                        onValueChange={setOpenAccordionItems}
+                        className="space-y-4"
+                      >
                         {categoryData.activities
                           .filter(
                             (activity) =>
@@ -532,7 +494,6 @@ export default function ActivityBooking() {
                                       </div>
                                     </div>
                                   </div>
-
                                   <div className="flex items-center gap-2">
                                     <div className="text-lg font-bold text-[#174166]">${activity.price}</div>
                                     <div className="transition-transform duration-300 data-[state=open]:rotate-180">
@@ -541,7 +502,6 @@ export default function ActivityBooking() {
                                   </div>
                                 </div>
                               </AccordionTrigger>
-
                               <AccordionContent className="p-4">
                                 {renderActivityTable(categoryName, activity)}
                               </AccordionContent>
@@ -554,8 +514,6 @@ export default function ActivityBooking() {
               );
             })}
           </Accordion>
-
-          {/* Pagination Buttons */}
           <div className="mt-6">
             <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
               <Button
@@ -580,9 +538,6 @@ export default function ActivityBooking() {
             </div>
           </div>
         </div>
-
-        {/* Right Column - Booking Summary */}
-        {/* {getTotalBookings() > 0 && ( */}
         <div className="w-full lg:w-[300px] flex-shrink-0">
           <div className="sticky top-20 lg:top-[40%] xl:top-[38%]">
             <div className="bg-white rounded-xl xl:rounded-2xl shadow p-3 xl:p-4 border-t-4 border-yellow-400">
@@ -597,7 +552,6 @@ export default function ActivityBooking() {
                     </h3>
                   </div>
                 </div>
-
                 {roomPrice > 0 && (
                   <div className="text-left">
                     <div className="text-base xl:text-lg font-semibold text-[#174166]">
@@ -606,7 +560,6 @@ export default function ActivityBooking() {
                     <div className="text-xs xl:text-sm text-gray-500">Room cost</div>
                   </div>
                 )}
-
                 {addOnPrice > 0 && (
                   <div className="text-left">
                     <div className="text-base xl:text-lg font-semibold text-[#174166]">
@@ -615,7 +568,6 @@ export default function ActivityBooking() {
                     <div className="text-xs xl:text-sm text-gray-500">Total add-ons cost</div>
                   </div>
                 )}
-
                 {activityPrice > 0 && (
                   <div className="text-left">
                     <div className="text-base xl:text-lg font-semibold text-[#174166]">
@@ -624,7 +576,6 @@ export default function ActivityBooking() {
                     <div className="text-xs xl:text-sm text-gray-500">Total activity cost</div>
                   </div>
                 )}
-
                 <div className="text-left">
                   <div className="text-base xl:text-lg font-semibold text-[#174166]">
                     ${totalPrice.toFixed(2)}
@@ -632,17 +583,18 @@ export default function ActivityBooking() {
                   <div className="text-xs xl:text-sm text-gray-500">Total cost</div>
                 </div>
               </div>
-
               <div className="flex flex-col gap-2 mt-2">
-                {/* <Button
-                    variant="outline"
-                    className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
-                    onClick={() => {
-                      dispatch(resetActivity());
-                    }}
-                  >
-                    Clear All activity
-                </Button> */}
+                <Button
+                  variant="outline"
+                  className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
+                  onClick={() => {
+                    dispatch(resetActivity());
+                    setOpenAccordionItems([]);
+                    setOpenCategories([]);
+                  }}
+                >
+                  Clear All activity
+                </Button>
                 <Button
                   variant="outline"
                   className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
@@ -650,23 +602,25 @@ export default function ActivityBooking() {
                     dispatch(resetAddOns());
                     dispatch(resetRooms());
                     dispatch(resetActivity());
+                    setOpenAccordionItems([]);
+                    setOpenCategories([]);
                   }}
                 >
                   Clear All
                 </Button>
-                <Button className="bg-[#174166] hover:bg-[#1e4a73] px-3 xl:px-4 py-1 xl:py-2 text-xs xl:text-sm h-auto" onClick={() => {router.push("/guest")}}>
+                <Button
+                  className="bg-[#174166] hover:bg-[#1e4a73] px-3 xl:px-4 py-1 xl:py-2 text-xs xl:text-sm h-auto"
+                  onClick={() => {
+                    router.push("/guest");
+                  }}
+                >
                   Continue to guest form
                 </Button>
               </div>
             </div>
           </div>
         </div>
-
-        {/* )} */}
       </div>
-
-
-      {/* Bottom CTA Section */}
       <div className="bg-[#174166] text-white py-16 mt-12">
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-4">
@@ -685,7 +639,7 @@ export default function ActivityBooking() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-[#174166] hover:bg-white  px-8 py-3 rounded-xl"
+              className="border-white text-[#174166] hover:bg-white px-8 py-3 rounded-xl"
             >
               View Recommendations
             </Button>

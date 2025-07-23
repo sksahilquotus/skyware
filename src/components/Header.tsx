@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GuestsRoomsSelector from "./lib/GuestsRoomsSelector";
 import BookingSteps from "./lib/BookingSteps";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -10,13 +10,30 @@ import CalendarRange from "./lib/Calendar22";
 import { HelpCircle, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { DateRange } from "react-day-picker";
+import { format } from "date-fns/format";
+import { useDispatch } from "react-redux";
+import { setCheckInDate, setCheckOutDate } from "@/store/slices/counterSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [dateRange, setDateRange] = useState<DateRange>({
     from: new Date("2025-07-18"),
     to: new Date("2025-07-31"),
   });
+
+  useEffect(() => {
+    console.log("Date Range Changed:", dateRange);
+    if (dateRange?.from && dateRange?.to) {
+      const formattedCheckIn = format(new Date(dateRange.from), "EEE dd"); // e.g., "Fri 18"
+      const formattedCheckOut = format(new Date(dateRange.to), "EEE dd");  // e.g., "Tue 23"
+
+      dispatch(setCheckInDate({ date: formattedCheckIn }));
+      dispatch(setCheckOutDate({ date: formattedCheckOut }));
+    }
+  
+  }, [dateRange, dispatch])
+  
 
   return (
     <div className="md:sticky md:top-0 md:z-50 bg-gradient-to-b from-[#174166] to-[#1e4a73] text-white">
