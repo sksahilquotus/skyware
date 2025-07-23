@@ -405,7 +405,7 @@ export default function ActivityBooking() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-gray-50 rounded-2xl p-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -426,7 +426,7 @@ export default function ActivityBooking() {
           </div>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
           <Accordion type="multiple" value={openCategories} onValueChange={setOpenCategories} className="space-y-6">
             {Object.entries(activityData).map(([categoryName, categoryData]) => {

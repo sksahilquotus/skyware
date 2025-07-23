@@ -26,7 +26,7 @@ export default function ConfirmationPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Success Header */}
       <div className="bg-gradient-to-r from-[#174166] to-[#1e4a73] text-white py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-[#174166]" />
           </div>
@@ -43,7 +43,7 @@ export default function ConfirmationPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
@@ -320,7 +320,7 @@ export default function ConfirmationPage() {
 
       {/* Footer Message */}
       <div className="bg-[#174166] text-white py-8">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-2">Thank You for Choosing Us!</h2>
           <p className="text-blue-100">
             We look forward to providing you with an exceptional experience.
