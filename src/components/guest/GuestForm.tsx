@@ -92,8 +92,8 @@ export default function CheckoutForm() {
               <div key={step} className="flex items-center">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-200 ${step <= currentStep
-                      ? "bg-[#174166] text-white"
-                      : "bg-gray-200 text-gray-500"
+                    ? "bg-[#174166] text-white"
+                    : "bg-gray-200 text-gray-500"
                     }`}
                 >
                   {step < currentStep ? (
@@ -300,6 +300,29 @@ export default function CheckoutForm() {
             )}
           </div>
         </form>
+      </div>
+      <div className="mt-6">
+        <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
+          <Button
+            variant="outline"
+            className="border-gray-300 hover:border-gray-400"
+            onClick={() => {
+              console.log("Previous clicked");
+              router.push("/activities");
+            }}
+          >
+            ← Previous
+          </Button>
+          {currentStep < totalSteps ? (
+            <Button type="button" onClick={nextStep} className="px-8 py-3 bg-[#174166] hover:bg-[#1e4a73] text-white rounded-xl font-semibold w-full sm:w-auto">
+              Continue
+            </Button>
+          ) : (
+            <Button type="submit" className="px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-[#174166] rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-auto" onClick={() => router.push("/confirmation")}>
+              Complete Booking
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
