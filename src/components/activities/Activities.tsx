@@ -178,7 +178,7 @@ export const getDateKey = (date: string) => {
 
 export default function ActivityBooking() {
   const [openAccordionItems, setOpenAccordionItems] = useState<string[]>([]);
-  const [openCategories, setOpenCategories] = useState<string[]>([]); // New state for outer accordion
+  const [openCategories, setOpenCategories] = useState<string[]>([]);
   const quantities = useAppSelector((state: RootState) => state.counter.activityQuantities);
   const dispatch = useAppDispatch();
   const { roomPrice, addOnPrice, activityPrice, totalPrice, checkInDate, checkOutDate } = useAppSelector((state) => state.counter);
@@ -190,7 +190,6 @@ export default function ActivityBooking() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Initialize both openAccordionItems and openCategories from quantities
   useEffect(() => {
     const openItems: string[] = [];
     const openCats: string[] = [];
@@ -232,7 +231,6 @@ export default function ActivityBooking() {
 
     dispatch(setActivityQuantity({ category, title: activityTitle, date: dateKey, timeSlot, delta }));
 
-    // Update openAccordionItems and openCategories
     setOpenAccordionItems(prev => {
       const updatedQuantities = {
         ...quantities,
@@ -258,7 +256,6 @@ export default function ActivityBooking() {
       return prev;
     });
 
-    // Ensure category is open if activity has quantities
     setOpenCategories(prev => {
       const updatedQuantities = {
         ...quantities,
@@ -429,118 +426,120 @@ export default function ActivityBooking() {
       </div>
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
-          <Accordion type="multiple" value={openCategories} onValueChange={setOpenCategories} className="space-y-6">
-            {Object.entries(activityData).map(([categoryName, categoryData]) => {
-              const CategoryIcon = categoryData.icon;
-              return (
-                <div key={categoryName} className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                  <AccordionItem value={categoryName} className="border-none">
-                    <AccordionTrigger className={`${categoryData.bgColor} hover:shadow-md transition-all duration-200 px-6 py-6 hover:no-underline`}>
-                      <div className="flex items-center gap-4 w-full justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 bg-gradient-to-r ${categoryData.color} rounded-xl flex items-center justify-center shadow-md`}>
-                            <CategoryIcon className="w-6 h-6 text-white" />
-                          </div>
-                          <div className="text-left">
-                            <h2 className="text-xl font-bold text-gray-900">{categoryName}</h2>
-                            <p className="text-sm text-gray-600">
-                              {categoryData.activities.length} experience{categoryData.activities.length > 1 ? 's' : ''} available
-                            </p>
+          <div className="h-[calc(100vh-200px)] overflow-y-auto pr-4 scrollbar-hidden">
+            <Accordion type="multiple" value={openCategories} onValueChange={setOpenCategories} className="space-y-6">
+              {Object.entries(activityData).map(([categoryName, categoryData]) => {
+                const CategoryIcon = categoryData.icon;
+                return (
+                  <div key={categoryName} className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
+                    <AccordionItem value={categoryName} className="border-none">
+                      <AccordionTrigger className={`${categoryData.bgColor} hover:shadow-md transition-all duration-200 px-6 py-6 hover:no-underline`}>
+                        <div className="flex items-center gap-4 w-full justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 bg-gradient-to-r ${categoryData.color} rounded-xl flex items-center justify-center shadow-md`}>
+                              <CategoryIcon className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="text-left">
+                              <h2 className="text-xl font-bold text-gray-900">{categoryName}</h2>
+                              <p className="text-sm text-gray-600">
+                                {categoryData.activities.length} experience{categoryData.activities.length > 1 ? 's' : ''} available
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="px-6 pb-6">
-                      <Accordion
-                        type="multiple"
-                        value={openAccordionItems}
-                        onValueChange={setOpenAccordionItems}
-                        className="space-y-4"
-                      >
-                        {categoryData.activities
-                          .filter(
-                            (activity) =>
-                              searchTerm === "" ||
-                              activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              activity.description.toLowerCase().includes(searchTerm.toLowerCase())
-                          )
-                          .map((activity) => (
-                            <AccordionItem
-                              key={activity.title}
-                              value={activity.title}
-                              className="border border-gray-200 rounded-xl overflow-hidden"
-                            >
-                              <AccordionTrigger className="px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-200 hover:no-underline">
-                                <div className="flex items-center justify-between w-full mr-4">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                      <activity.icon className="w-4 h-4 text-[#174166]" />
-                                    </div>
-                                    <div className="text-left">
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-semibold text-gray-900">{activity.title}</span>
-                                        {activity.popular && (
-                                          <Badge className="bg-yellow-400 text-[#174166] hover:bg-yellow-500 text-xs">
-                                            Popular
-                                          </Badge>
-                                        )}
+                      </AccordionTrigger>
+                      <AccordionContent className="px-6 pb-6">
+                        <Accordion
+                          type="multiple"
+                          value={openAccordionItems}
+                          onValueChange={setOpenAccordionItems}
+                          className="space-y-4"
+                        >
+                          {categoryData.activities
+                            .filter(
+                              (activity) =>
+                                searchTerm === "" ||
+                                activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                activity.description.toLowerCase().includes(searchTerm.toLowerCase())
+                            )
+                            .map((activity) => (
+                              <AccordionItem
+                                key={activity.title}
+                                value={activity.title}
+                                className="border border-gray-200 rounded-xl overflow-hidden"
+                              >
+                                <AccordionTrigger className="px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-all duration-200 hover:no-underline">
+                                  <div className="flex items-center justify-between w-full mr-4">
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                                        <activity.icon className="w-4 h-4 text-[#174166]" />
                                       </div>
-                                      <div className="flex items-center gap-3 text-xs text-gray-500">
-                                        <span>{activity.duration}</span>
-                                        <span>•</span>
-                                        <div className="flex items-center gap-1">
-                                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                                          <span>{activity.rating}</span>
+                                      <div className="text-left">
+                                        <div className="flex items-center gap-2">
+                                          <span className="font-semibold text-gray-900">{activity.title}</span>
+                                          {activity.popular && (
+                                            <Badge className="bg-yellow-400 text-[#174166] hover:bg-yellow-500 text-xs">
+                                              Popular
+                                            </Badge>
+                                          )}
+                                        </div>
+                                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                                          <span>{activity.duration}</span>
+                                          <span>•</span>
+                                          <div className="flex items-center gap-1">
+                                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                            <span>{activity.rating}</span>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <div className="text-lg font-bold text-[#174166]">${activity.price}</div>
-                                    <div className="transition-transform duration-300 data-[state=open]:rotate-180">
-                                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                                    <div className="flex items-center gap-2">
+                                      <div className="text-lg font-bold text-[#174166]">${activity.price}</div>
+                                      <div className="transition-transform duration-300 data-[state=open]:rotate-180">
+                                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </AccordionTrigger>
-                              <AccordionContent className="p-4">
-                                {renderActivityTable(categoryName, activity)}
-                              </AccordionContent>
-                            </AccordionItem>
-                          ))}
-                      </Accordion>
-                    </AccordionContent>
-                  </AccordionItem>
-                </div>
-              );
-            })}
-          </Accordion>
-          <div className="mt-6">
-            <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
-              <Button
-                variant="outline"
-                className="border-gray-300 hover:border-gray-400"
-                onClick={() => {
-                  console.log("Previous clicked");
-                  router.push("/addons");
-                }}
-              >
-                ← Previous
-              </Button>
-              <Button
-                className="bg-[#174166] hover:bg-[#1e4a73]"
-                onClick={() => {
-                  console.log("Next clicked");
-                  router.push("/guest");
-                }}
-              >
-                Next →
-              </Button>
+                                </AccordionTrigger>
+                                <AccordionContent className="p-4">
+                                  {renderActivityTable(categoryName, activity)}
+                                </AccordionContent>
+                              </AccordionItem>
+                            ))}
+                        </Accordion>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </div>
+                );
+              })}
+            </Accordion>
+            <div className="mt-6">
+              <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
+                <Button
+                  variant="outline"
+                  className="border-gray-300 hover:border-gray-400"
+                  onClick={() => {
+                    console.log("Previous clicked");
+                    router.push("/addons");
+                  }}
+                >
+                  ← Previous
+                </Button>
+                <Button
+                  className="bg-[#174166] hover:bg-[#1e4a73]"
+                  onClick={() => {
+                    console.log("Next clicked");
+                    router.push("/guest");
+                  }}
+                >
+                  Next →
+                </Button>
+              </div>
             </div>
           </div>
         </div>
         <div className="w-full lg:w-[300px] flex-shrink-0">
-          <div className="lg:sticky lg:top-[40%] xl:top-[40%]">
+          <div className="lg:sticky lg:top-[40%]">
             <div className="bg-white rounded-xl xl:rounded-2xl shadow p-3 xl:p-4 border-t-4 border-yellow-400">
               <div className="flex flex-col gap-1 xl:gap-2 mb-1 xl:mb-2">
                 <div className="flex items-center gap-2 xl:gap-3">

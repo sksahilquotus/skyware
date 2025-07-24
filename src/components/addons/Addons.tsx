@@ -343,7 +343,7 @@ export default function AddOns() {
 
           {/* Right: Summary Sidebar */}
           <div className="w-full lg:w-[300px] flex-shrink-0">
-            <div className="">
+            <div className="sticky lg:top-[40%]">
               <div className="bg-white rounded-xl xl:rounded-2xl shadow p-3 xl:p-4 border-t-4 border-yellow-400">
                 <div className="flex flex-col gap-1 xl:gap-2 mb-1 xl:mb-2">
                   <div className="flex items-center gap-2 xl:gap-3">
