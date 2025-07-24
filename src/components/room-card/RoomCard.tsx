@@ -215,19 +215,6 @@ export const RoomCard = ({
             </div>
           </div>
         </div>
-        {/* {isSelected && <div className="mt-6">
-          <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
-            <Button
-              className="bg-[#174166] hover:bg-[#1e4a73]"
-              onClick={() => {
-                console.log("Next clicked");
-                router.push("/activities");
-              }}
-            >
-              Next →
-            </Button>
-          </div>
-        </div>} */}
       </Card>
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
