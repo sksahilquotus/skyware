@@ -12,5 +12,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")], // required for ShadCN UI
+  plugins: [
+    require("tailwindcss-animate"),
+    require('tailwind-scrollbar-hide')
+  ], // required for ShadCN UI
 };
