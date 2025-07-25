@@ -45,7 +45,25 @@ const CalendarRange: React.FC<CalendarRangeProps> = ({ value, onChange }) => {
             mode="range"
             showOutsideDays={false}
             selected={value}
-            onSelect={(range) => range && onChange(range)}
+            // onSelect={(range) => range && onChange(range)}
+            onSelect={(range, selectedDay) => {
+              if (!value.from && !value.to) {
+                // No date selected, start new selection
+                onChange({ from: selectedDay, to: undefined });
+              } else if (value.from && !value.to) {
+                // Selecting the second date to complete range
+                if (selectedDay && selectedDay.getTime() === value.from.getTime()) {
+                  // Same day clicked again, reset
+                  onChange({ from: undefined, to: undefined });
+                } else {
+                  // Set as range
+                  onChange({ from: value.from, to: selectedDay });
+                }
+              } else if (value.from && value.to) {
+                // Both from and to are already selected — reset to new 'from'
+                onChange({ from: selectedDay, to: undefined });
+              }
+            }}
             numberOfMonths={2}
             initialFocus
             className="rounded-lg"
