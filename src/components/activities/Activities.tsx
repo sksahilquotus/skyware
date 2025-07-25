@@ -607,14 +607,14 @@ export default function ActivityBooking() {
                 >
                   Clear All
                 </Button>
-                <Button
+                {/* <Button
                   className="bg-[#174166] hover:bg-[#1e4a73] px-3 py-1 text-xs h-auto"
                   onClick={() => {
                     router.push("/guest");
                   }}
                 >
                   Continue to guest form
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
