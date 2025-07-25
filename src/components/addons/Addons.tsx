@@ -223,11 +223,10 @@ export default function AddOns() {
                           return (
                             <Card
                               key={item.title}
-                              className={`transition-all duration-200 hover:shadow-md border-2 ${
-                                hasQuantity
+                              className={`transition-all duration-200 hover:shadow-md border-2 ${hasQuantity
                                   ? "border-yellow-400 bg-yellow-50"
                                   : "border-gray-200 hover:border-gray-300"
-                              }`}
+                                }`}
                             >
                               <CardContent className="p-6">
                                 <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr] gap-6 items-center">
@@ -315,7 +314,7 @@ export default function AddOns() {
                 );
               })}
 
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
                   <Button
                     variant="outline"
@@ -337,21 +336,21 @@ export default function AddOns() {
                     Next →
                   </Button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* Right: Summary Sidebar */}
           <div className="w-full lg:w-[300px] flex-shrink-0">
-            <div className="sticky lg:top-[40%]">
-              <div className="bg-white rounded-xl xl:rounded-2xl shadow p-3 xl:p-4 border-t-4 border-yellow-400">
-                <div className="flex flex-col gap-1 xl:gap-2 mb-1 xl:mb-2">
-                  <div className="flex items-center gap-2 xl:gap-3">
-                    <div className="w-7 h-7 xl:w-8 xl:h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-                      <ShoppingCart className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-[#174166]" />
+            <div className="">
+              <div className="bg-white rounded-xl shadow p-3 border-t-4 border-yellow-400">
+                <div className="flex flex-col gap-1  mb-1">
+                  <div className="flex items-center gap-2 ">
+                    <div className="w-7 h-7  bg-yellow-400 rounded-full flex items-center justify-center">
+                      <ShoppingCart className="w-3.5 h-3.5  text-[#174166]" />
                     </div>
                     <div>
-                      <h3 className="text-base xl:text-lg font-medium xl:font-semibold text-gray-900 leading-none">
+                      <h3 className="text-base font-medium text-gray-900 leading-none">
                         Cart Summary
                       </h3>
                     </div>
@@ -359,43 +358,43 @@ export default function AddOns() {
 
                   {roomPrice > 0 && (
                     <div className="text-left">
-                      <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                      <div className="text-base font-semibold text-[#174166]">
                         ${roomPrice.toFixed(2)}
                       </div>
-                      <div className="text-xs xl:text-sm text-gray-500">Room cost</div>
+                      <div className="text-xs text-gray-500">Room cost</div>
                     </div>
                   )}
 
                   {addOnPrice > 0 && (
                     <div className="text-left">
-                      <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                      <div className="text-base font-semibold text-[#174166]">
                         ${addOnPrice.toFixed(2)}
                       </div>
-                      <div className="text-xs xl:text-sm text-gray-500">Total add-ons cost</div>
+                      <div className="text-xs text-gray-500">Total add-ons cost</div>
                     </div>
                   )}
 
                   {activityPrice > 0 && (
                     <div className="text-left">
-                      <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                      <div className="text-base font-semibold text-[#174166]">
                         ${activityPrice.toFixed(2)}
                       </div>
-                      <div className="text-xs xl:text-sm text-gray-500">Total activity cost</div>
+                      <div className="text-xs text-gray-500">Total activity cost</div>
                     </div>
                   )}
 
                   <div className="text-left">
-                    <div className="text-base xl:text-lg font-semibold text-[#174166]">
+                    <div className="text-base font-semibold text-[#174166]">
                       ${totalPrice.toFixed(2)}
                     </div>
-                    <div className="text-xs xl:text-sm text-gray-500">Total cost</div>
+                    <div className="text-xs text-gray-500">Total cost</div>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-2 mt-2">
                   <Button
                     variant="outline"
-                    className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
+                    className="border-gray-300 hover:border-gray-400 py-1 text-xs h-auto"
                     onClick={() => {
                       console.log("Resetting add-ons");
                       dispatch(resetAddOns());
@@ -405,7 +404,7 @@ export default function AddOns() {
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-gray-300 hover:border-gray-400 py-1 xl:py-2 text-xs xl:text-sm h-auto"
+                    className="border-gray-300 hover:border-gray-400 py-1  text-xs h-auto"
                     onClick={() => {
                       console.log("Resetting add-ons");
                       dispatch(resetAddOns());
@@ -416,12 +415,35 @@ export default function AddOns() {
                     Clear All
                   </Button>
                   <Button
-                    className="bg-[#174166] hover:bg-[#1e4a73] px-3 xl:px-4 py-1 xl:py-2 text-xs xl:text-sm h-auto"
+                    className="bg-[#174166] hover:bg-[#1e4a73] px-3 py-1 text-xs h-auto"
                     onClick={() => router.push("/activities")}
                   >
                     Continue to Activities
                   </Button>
                 </div>
+              </div>
+            </div>
+            <div className="mt-0.5">
+              <div className="flex justify-end items-center  p-4 gap-2">
+                <Button
+                  variant="outline"
+                  className="border-gray-300 hover:border-gray-400"
+                  onClick={() => {
+                    console.log("Previous clicked");
+                    router.push("/");
+                  }}
+                >
+                  ← Previous
+                </Button>
+                <Button
+                  className="bg-[#174166] hover:bg-[#1e4a73]"
+                  onClick={() => {
+                    console.log("Next clicked");
+                    router.push("/activities");
+                  }}
+                >
+                  Next →
+                </Button>
               </div>
             </div>
           </div>
