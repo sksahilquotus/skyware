@@ -402,7 +402,7 @@ export default function ActivityBooking() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="bg-white shadow-sm border-b">
+      {/* <div className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-gray-50 rounded-2xl p-4">
             <div className="flex-1 relative">
@@ -423,7 +423,7 @@ export default function ActivityBooking() {
             </Button>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
           <div className="h-[calc(100vh-200px)] overflow-y-auto pr-4 scrollbar-hidden">
@@ -562,7 +562,7 @@ export default function ActivityBooking() {
                 )}
                 {addOnPrice > 0 && (
                   <div className="text-left">
-                    <div className="text-basefont-semibold text-[#174166]">
+                    <div className="text-base font-semibold text-[#174166]">
                       ${addOnPrice.toFixed(2)}
                     </div>
                     <div className="text-xs text-gray-500">Total add-ons cost</div>
@@ -626,7 +626,7 @@ export default function ActivityBooking() {
                 className="border-gray-300 hover:border-gray-400"
                 onClick={() => {
                   console.log("Previous clicked");
-                  router.push("/");
+                  router.push("/addons");
                 }}
               >
                 ← Previous
@@ -635,7 +635,7 @@ export default function ActivityBooking() {
                 className="bg-[#174166] hover:bg-[#1e4a73]"
                 onClick={() => {
                   console.log("Next clicked");
-                  router.push("/activities");
+                  router.push("/guest");
                 }}
               >
                 Next →

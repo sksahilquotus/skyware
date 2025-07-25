@@ -84,10 +84,10 @@ export default function CheckoutForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 py-4">
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+        <div className="mb-2">
+          <div className="flex items-center justify-between">
             {[1, 2].map((step) => (
               <div key={step} className="flex items-center">
                 <div
@@ -285,7 +285,7 @@ export default function CheckoutForm() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex flex-col-reverse sm:flex-row justify-between gap-4 pt-6">
+          <div className="flex flex-col-reverse sm:flex-row justify-between gap-4">
             <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1} className="px-8 py-3 border-gray-300 hover:border-[#174166] hover:text-[#174166] rounded-xl w-full sm:w-auto">
               Previous
             </Button>
@@ -301,7 +301,7 @@ export default function CheckoutForm() {
           </div>
         </form>
       </div>
-      <div className="mt-6">
+      {/* <div className="">
         <div className="flex justify-end items-center bg-white p-4 rounded-xl shadow-sm border fixed bottom-0 left-0 right-0 lg:right-auto z-50 lg:z-auto lg:rounded-none lg:border-none lg:bg-transparent gap-2">
           {currentStep === 1? <Button
             variant="outline"
@@ -335,7 +335,7 @@ export default function CheckoutForm() {
           </Button>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
