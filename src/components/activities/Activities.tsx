@@ -6,9 +6,8 @@ import { decrement, increment, resetActivity, resetAddOns, resetRooms, setActivi
 import { RootState } from "@/store";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Clock, Star, Heart, Plus, Minus, ShoppingCart, Sparkles, Waves, Zap, Flower2, Fish, Search, Filter, ChevronDown } from "lucide-react";
+import { Clock, Star, Heart, Plus, Minus, ShoppingCart, Sparkles, Waves, Zap, Flower2, Fish, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { getDayAndDate } from "../addons/Addons";
 
@@ -188,7 +187,7 @@ export default function ActivityBooking() {
   ];
   const router = useRouter();
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const openItems: string[] = [];
@@ -456,12 +455,12 @@ export default function ActivityBooking() {
                           className="space-y-4"
                         >
                           {categoryData.activities
-                            .filter(
-                              (activity) =>
-                                searchTerm === "" ||
-                                activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                activity.description.toLowerCase().includes(searchTerm.toLowerCase())
-                            )
+                            // .filter(
+                            //   (activity) =>
+                            //     searchTerm === "" ||
+                            //     activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            //     activity.description.toLowerCase().includes(searchTerm.toLowerCase())
+                            // )
                             .map((activity) => (
                               <AccordionItem
                                 key={activity.title}
